@@ -36,6 +36,30 @@ build_metadata.AdditionalFiles.ManifestResourceName = SportEventsApp.MainPage.xa
 build_metadata.AdditionalFiles.TargetPath = MainPage.xaml
 build_metadata.AdditionalFiles.RelativePath = MainPage.xaml
 
+[C:/Users/Omistaja/SportEventsApp/Pages/AdminPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = SportEventsApp.Pages.AdminPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\AdminPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\AdminPage.xaml
+
+[C:/Users/Omistaja/SportEventsApp/Pages/CalendarPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = SportEventsApp.Pages.CalendarPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\CalendarPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\CalendarPage.xaml
+
+[C:/Users/Omistaja/SportEventsApp/Pages/EventCardPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = SportEventsApp.Pages.EventCardPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\EventCardPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\EventCardPage.xaml
+
+[C:/Users/Omistaja/SportEventsApp/Pages/EventsListPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = SportEventsApp.Pages.EventsListPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\EventsListPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\EventsListPage.xaml
+
 [C:/Users/Omistaja/SportEventsApp/Resources/Styles/Colors.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = SportEventsApp.Resources.Styles.Colors.xaml

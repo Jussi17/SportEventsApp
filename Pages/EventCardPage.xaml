@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SportEventsApp.Pages.EventCardPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Tapahtuma">
+
+    <ScrollView>
+        <Frame
+            Margin="20"
+            Padding="20"
+            BackgroundColor="White"
+            BorderColor="LightGray"
+            CornerRadius="20"
+            HasShadow="True">
+
+            <VerticalStackLayout Spacing="10">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="24"
+                    Text="{Binding Name}" />
+
+                <Label
+                    FontSize="18"
+                    Text="{Binding Date, StringFormat='{0:dd.MM.yyyy HH:mm}'}"
+                    TextColor="DarkBlue" />
+
+                <Label FontSize="18" Text="{Binding Location}" />
+
+                <Label
+                    FontSize="16"
+                    Text="{Binding Channel}"
+                    TextColor="Gray" />
+
+                <Label
+                    FontSize="14"
+                    LineBreakMode="WordWrap"
+                    Text="{Binding Description}"
+                    TextColor="Black" />
+            </VerticalStackLayout>
+        </Frame>
+    </ScrollView>
+
+</ContentPage>

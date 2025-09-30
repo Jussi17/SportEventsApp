@@ -1,0 +1,63 @@
+<ContentPage
+    x:Class="SportEventsApp.Pages.AdminPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Hallintapaneeli">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="15" Spacing="10">
+
+            <Label
+                FontAttributes="Bold"
+                FontSize="20"
+                HorizontalOptions="Center"
+                Text="Lisää uusi tapahtuma" />
+
+            <Entry x:Name="NameEntry" Placeholder="Tapahtuman nimi" />
+            <Entry x:Name="LocationEntry" Placeholder="Paikka" />
+            <DatePicker x:Name="DatePicker" />
+            <TimePicker x:Name="TimePicker" />
+            <Entry x:Name="ChannelEntry" Placeholder="Kanava / suoratoisto" />
+
+            <Button
+                BackgroundColor="#1976D2"
+                Clicked="OnAddEventClicked"
+                CornerRadius="8"
+                Text="Lisää tapahtuma"
+                TextColor="White" />
+
+            <CollectionView
+                x:Name="AdminEventsCollection"
+                Margin="0,20,0,0"
+                SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame
+                            Margin="5"
+                            Padding="10"
+                            CornerRadius="8"
+                            HasShadow="True">
+                            <VerticalStackLayout>
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="16"
+                                    Text="{Binding Name}" />
+                                <Label
+                                    FontSize="14"
+                                    Text="{Binding Location}"
+                                    TextColor="Gray" />
+                                <Label FontSize="14" Text="{Binding Date, StringFormat='{0:dd.MM.yyyy HH:mm}'}" />
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="14"
+                                    Text="{Binding Channel}"
+                                    TextColor="DarkBlue" />
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

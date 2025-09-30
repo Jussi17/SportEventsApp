@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SportEventsApp.Pages.CalendarPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Kalenteri">
+
+    <VerticalStackLayout Padding="10">
+
+        <!--  Päivämäärän valinta  -->
+        <DatePicker Date="{Binding SelectedDate}" />
+
+        <Label
+            Margin="0,10,0,5"
+            FontAttributes="Bold"
+            Text="Tapahtumat valittuna päivänä:" />
+
+        <!--  Listataan tapahtumat valitulle päivälle  -->
+        <CollectionView ItemsSource="{Binding FilteredEvents}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame
+                        Margin="5"
+                        Padding="10"
+                        BorderColor="LightGray"
+                        CornerRadius="10">
+                        <VerticalStackLayout>
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="18"
+                                Text="{Binding Name}" />
+                            <Label FontSize="14" Text="{Binding Date, StringFormat='{0:HH:mm}'}" />
+                            <Label FontSize="14" Text="{Binding Location}" />
+                            <Label
+                                FontSize="14"
+                                Text="{Binding Channel}"
+                                TextColor="Gray" />
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </VerticalStackLayout>
+
+</ContentPage>
