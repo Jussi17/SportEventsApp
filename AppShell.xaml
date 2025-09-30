@@ -5,9 +5,25 @@
     xmlns:pages="clr-namespace:SportEventsApp.Pages"
     Title="SportEventsApp">
 
-    <TabBar>
+    <!--  Hampurilaisvalikko  -->
+    <Shell.FlyoutHeader>
+        <Grid Padding="10" RowDefinitions="Auto,Auto">
+            <Label
+                Grid.Row="0"
+                Padding="0,0,0,10"
+                FontAttributes="Bold"
+                FontSize="20"
+                Text="Tumma teema" />
+            <Switch
+                x:Name="TeemaSwitch"
+                Grid.Row="1"
+                Toggled="TeemaToggled" />
+        </Grid>
+    </Shell.FlyoutHeader>
+
+    <FlyoutItem Title="Tapahtumat" Icon="icon_events.png">
         <ShellContent Title="Lista" ContentTemplate="{DataTemplate pages:EventsListPage}" />
         <ShellContent Title="Kalenteri" ContentTemplate="{DataTemplate pages:CalendarPage}" />
         <ShellContent Title="Hallinta" ContentTemplate="{DataTemplate pages:AdminPage}" />
-    </TabBar>
+    </FlyoutItem>
 </Shell>
