@@ -1,0 +1,33 @@
+# Build & output
+bin/
+obj/
+*.user
+*.suo
+*.userprefs
+
+# Visual Studio
+.vs/
+.vscode/
+
+# NuGet
+*.nupkg
+packages/
+.nuget/
+
+# MAUI / iOS / Android
+*.apk
+*.aab
+*.app
+*.dll
+*.pdb
+*.so
+*.dylib
+*.framework
+*.hmap
+
+# Rider / IDE
+.idea/
+
+# Mac / Linux
+.DS_Store
+
