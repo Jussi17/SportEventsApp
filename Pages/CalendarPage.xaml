@@ -19,11 +19,11 @@
         <CollectionView ItemsSource="{Binding FilteredEvents}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Frame
+                    <Border
                         Margin="5"
                         Padding="10"
-                        BorderColor="LightGray"
-                        CornerRadius="10">
+                        Stroke="LightGray"
+                        StrokeShape="RoundRectangle 10">
                         <VerticalStackLayout>
                             <Label
                                 FontAttributes="Bold"
@@ -36,7 +36,7 @@
                                 Text="{Binding Channel}"
                                 TextColor="Gray" />
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

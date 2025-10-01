@@ -26,11 +26,12 @@ namespace SportEventsApp.Pages
         {
             if (e.CurrentSelection.FirstOrDefault() is Event selectedEvent)
             {
-                var page = new EventCardPage();
-                page.BindingContext = selectedEvent;  // asetetaan valittu tapahtuma
-                await Navigation.PushAsync(page);
+                await Shell.Current.GoToAsync("EventCardPage", new Dictionary<string, object>
+        {
+            { "SelectedEvent", selectedEvent }
+        });
 
-                ((CollectionView)sender).SelectedItem = null; // tyhjennä valinta
+                ((CollectionView)sender).SelectedItem = null;
             }
         }
 

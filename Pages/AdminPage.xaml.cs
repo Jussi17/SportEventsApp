@@ -12,9 +12,18 @@ namespace SportEventsApp.Pages
         public AdminPage()
         {
             InitializeComponent();
-
-            AdminEvents = new ObservableCollection<Event>();
+            if (!Preferences.Get("IsLoggedIn", false))
+            {
+                Shell.Current.GoToAsync("LoginPage");
+            }
+            AdminEvents = [];
             AdminEventsCollection.ItemsSource = AdminEvents;
+        }
+
+        private void OnLogoutClicked(object sender, EventArgs e)
+        {
+            Preferences.Set("IsLoggedIn", false);
+            Shell.Current.GoToAsync("///");
         }
 
         private void OnAddEventClicked(object sender, EventArgs e)

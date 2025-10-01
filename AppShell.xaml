@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" ?>
 <Shell
     x:Class="SportEventsApp.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -21,9 +22,26 @@
         </Grid>
     </Shell.FlyoutHeader>
 
-    <FlyoutItem Title="Tapahtumat" Icon="icon_events.png">
-        <ShellContent Title="Lista" ContentTemplate="{DataTemplate pages:EventsListPage}" />
-        <ShellContent Title="Kalenteri" ContentTemplate="{DataTemplate pages:CalendarPage}" />
-        <ShellContent Title="Hallinta" ContentTemplate="{DataTemplate pages:AdminPage}" />
+    <FlyoutItem Title="Tapahtumat">
+        <ShellContent
+            Title="Lista"
+            ContentTemplate="{DataTemplate pages:EventsListPage}"
+            Route="EventsListPage" />
+        <ShellContent
+            Title="Kalenteri"
+            ContentTemplate="{DataTemplate pages:CalendarPage}"
+            Route="CalendarPage" />
+
+        <ShellContent
+            Title="Hallinta"
+            ContentTemplate="{DataTemplate pages:AdminPage}"
+            Route="AdminPage" />
     </FlyoutItem>
+
+    <!--  Kirjautumispainike  -->
+    <MenuItem
+        x:Name="LoginMenuItem"
+        Clicked="OnLoginClicked"
+        Text="Kirjaudu sisään" />
+
 </Shell>

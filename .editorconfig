@@ -1,0 +1,22 @@
+﻿[*.{cs,vb}]
+
+# IDE0044: Add readonly modifier
+dotnet_diagnostic.IDE0044.severity = none
+
+# CS8622: Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
+dotnet_diagnostic.CS8622.severity = none
+
+# CS8602: Dereference of a possibly null reference.
+dotnet_diagnostic.CS8602.severity = none
+
+# CS8600: Converting null literal or possible null value to non-nullable type.
+dotnet_diagnostic.CS8600.severity = none
+
+# CS0618: Type or member is obsolete
+dotnet_diagnostic.CS0618.severity = none
+
+# IDE0028: Simplify collection initialization
+dotnet_diagnostic.IDE0028.severity = none
+
+# IDE0090: Use 'new(...)'
+dotnet_diagnostic.IDE0090.severity = none
