@@ -8,7 +8,8 @@
     <VerticalStackLayout
         Padding="20"
         Spacing="15"
-        VerticalOptions="Center">
+        VerticalOptions="Center"
+        WidthRequest="300">
         <Label
             FontAttributes="Bold"
             FontSize="24"

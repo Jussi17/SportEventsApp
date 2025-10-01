@@ -15,19 +15,34 @@
                 <Frame
                     Margin="5"
                     Padding="10"
+                    BackgroundColor="{AppThemeBinding Light=White,
+                                                      Dark=#333333}"
                     BorderColor="LightGray"
-                    CornerRadius="10">
+                    CornerRadius="10"
+                    WidthRequest="300">
+
                     <VerticalStackLayout>
                         <Label
                             FontAttributes="Bold"
                             FontSize="18"
-                            Text="{Binding Name}" />
-                        <Label FontSize="14" Text="{Binding Date, StringFormat='{0:dd.MM.yyyy HH:mm}'}" />
-                        <Label FontSize="14" Text="{Binding Location}" />
+                            Text="{Binding Name}"
+                            TextColor="{AppThemeBinding Light=Black,
+                                                        Dark=White}" />
+                        <Label
+                            FontSize="14"
+                            Text="{Binding Date, StringFormat='{0:dd.MM.yyyy HH:mm}'}"
+                            TextColor="{AppThemeBinding Light=Gray,
+                                                        Dark=LightGray}" />
+                        <Label
+                            FontSize="14"
+                            Text="{Binding Location}"
+                            TextColor="{AppThemeBinding Light=Black,
+                                                        Dark=White}" />
                         <Label
                             FontSize="14"
                             Text="{Binding Channel}"
-                            TextColor="Gray" />
+                            TextColor="{AppThemeBinding Light=Gray,
+                                                        Dark=LightGray}" />
                     </VerticalStackLayout>
                 </Frame>
             </DataTemplate>
