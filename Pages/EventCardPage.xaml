@@ -9,7 +9,8 @@
         <Frame
             Margin="20"
             Padding="20"
-            BackgroundColor="White"
+            BackgroundColor="{AppThemeBinding Light=White,
+                                              Dark=#333333}"
             BorderColor="LightGray"
             CornerRadius="20"
             HasShadow="True">
@@ -19,25 +20,29 @@
                     FontAttributes="Bold"
                     FontSize="24"
                     Text="{Binding Name}"
-                    TextColor="Gray" />
+                    TextColor="{AppThemeBinding Light=Black,
+                                                Dark=White}" />
 
                 <Label
                     FontSize="18"
                     Text="{Binding Date, StringFormat='{0:dd.MM.yyyy HH:mm}'}"
-                    TextColor="Gray" />
+                    TextColor="{AppThemeBinding Light=Black,
+                                                Dark=White}" />
 
                 <Label FontSize="18" Text="{Binding Location}" />
 
                 <Label
                     FontSize="16"
                     Text="{Binding Channel}"
-                    TextColor="Gray" />
+                    TextColor="{AppThemeBinding Light=Black,
+                                                Dark=White}" />
 
                 <Label
                     FontSize="14"
                     LineBreakMode="WordWrap"
                     Text="{Binding Description}"
-                    TextColor="Black" />
+                    TextColor="{AppThemeBinding Light=Black,
+                                                Dark=White}" />
             </VerticalStackLayout>
         </Frame>
     </ScrollView>

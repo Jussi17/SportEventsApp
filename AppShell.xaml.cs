@@ -84,8 +84,8 @@ public partial class AppShell : Shell
         Preferences.Set("AppTheme", isDarkMode ? "Dark" : "Light");
         if (TeemaSwitch != null)
         {
-            TeemaSwitch.OnColor = isDarkMode ? Colors.Red : Colors.White;
-            TeemaSwitch.ThumbColor = isDarkMode ? Colors.White : Colors.Red;
+            TeemaSwitch.OnColor = isDarkMode ? Colors.Blue : Colors.White;
+            TeemaSwitch.ThumbColor = isDarkMode ? Colors.White : Colors.Blue;
         }
     }
 
