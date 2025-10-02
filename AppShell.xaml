@@ -8,19 +8,49 @@
 
     <!--  Hampurilaisvalikko  -->
     <Shell.FlyoutHeader>
-        <Grid Padding="10" RowDefinitions="Auto,Auto">
+        <Grid Padding="10">
+            <!--  Tehdään 2 saraketta: teksti vasemmalle, kytkin oikealle  -->
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <!--  venyy  -->
+                <ColumnDefinition Width="Auto" />
+                <!--  kytkimelle  -->
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!--  Tumma teema  -->
             <Label
                 Grid.Row="0"
-                Padding="0,0,0,10"
-                FontAttributes="Bold"
-                FontSize="20"
-                Text="Tumma teema" />
+                Grid.Column="0"
+                FontSize="14"
+                Text="Tumma teema"
+                VerticalOptions="Center" />
+
             <Switch
                 x:Name="TeemaSwitch"
-                Grid.Row="1"
+                Grid.Row="0"
+                Grid.Column="1"
                 Toggled="TeemaToggled" />
+
+            <!--  Ilmoitukset  -->
+            <Label
+                Grid.Row="1"
+                Grid.Column="0"
+                FontSize="14"
+                Text="Ilmoitukset"
+                VerticalOptions="Center" />
+
+            <Switch
+                x:Name="NotificationSwitch"
+                Grid.Row="1"
+                Grid.Column="1"
+                Toggled="OnNotificationToggled" />
         </Grid>
     </Shell.FlyoutHeader>
+
 
     <FlyoutItem Title="Tapahtumat">
         <ShellContent

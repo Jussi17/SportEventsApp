@@ -8,6 +8,7 @@ namespace SportEventsApp;
 public partial class AppShell : Shell
 {
     private bool _pendingLoginRedirect = false;
+    public static event EventHandler NotificationsChanged;
 
     public AppShell()
     {
@@ -93,6 +94,7 @@ public partial class AppShell : Shell
     {
         base.OnAppearing();
         LoadThemePreference();
+        LoadNotificationPreference();
         UpdateLoginMenuItem();
 
         if (_pendingLoginRedirect)
@@ -110,4 +112,31 @@ public partial class AppShell : Shell
         if (TeemaSwitch != null)
             TeemaSwitch.IsToggled = isDarkMode;
     }
+
+    private void LoadNotificationPreference()
+    {
+        bool enabled = Preferences.Get("NotificationsEnabled", false);
+
+        if (NotificationSwitch != null)
+        {
+            NotificationSwitch.IsToggled = enabled;
+            NotificationSwitch.OnColor = enabled ? Colors.Blue : Colors.White;
+            NotificationSwitch.ThumbColor = enabled ? Colors.White : Colors.Blue;
+        }
+    }
+
+    private void OnNotificationToggled(object sender, ToggledEventArgs e)
+    {
+        bool enabled = e.Value;
+        Preferences.Set("NotificationsEnabled", enabled);
+        NotificationsChanged?.Invoke(this, EventArgs.Empty);
+
+        if (NotificationSwitch != null)
+        {
+            NotificationSwitch.OnColor = enabled ? Colors.Blue : Colors.White;
+            NotificationSwitch.ThumbColor = enabled ? Colors.White : Colors.Blue;
+        }
+    }
+
+
 }
