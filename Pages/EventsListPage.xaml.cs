@@ -5,6 +5,7 @@ using SportEventsApp.Models;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Microsoft.Maui.Graphics;
 
 #if WINDOWS
 using Microsoft.Toolkit.Uwp.Notifications;
@@ -16,6 +17,9 @@ namespace SportEventsApp.Pages;
 public partial class EventsListPage : ContentPage
 {
     public ObservableCollection<Event> Events { get; set; }
+    public ObservableCollection<Event> FilteredEvents { get; set; }
+
+    private bool showUpcoming = true; // Tulevat oletuksena
 
     public EventsListPage()
     {
@@ -23,19 +27,101 @@ public partial class EventsListPage : ContentPage
 
         Events = new ObservableCollection<Event>
         {
-            new Event { Id = 1, Name = "Testitapahtuma", Date = DateTime.Now.AddMinutes(1), Location = "Helsinki", Channel = "MTV3" },
-            new Event { Id = 2, Name = "Jalkapallo MM-finaali", Date = new DateTime(2026,7,12,21,0,0), Location = "New York", Channel = "Yle Areena" },
-            new Event { Id = 3, Name = "Olympialaiset - Avajaiset", Date = new DateTime(2028,7,20,20,0,0), Location = "Los Angeles", Channel = "Discovery+" }
+     // Jalkapallo
+    new Event { Id = 1, Sport = "Jalkapallo", Name = "Veikkausliiga: HJK - KuPS", Date = new DateTime(2025, 7, 18, 18, 30, 0), Location = "Helsinki", Channel = "Ruutu+" },
+    new Event { Id = 2, Sport = "Jalkapallo", Name = "Mestarien liiga - Finaali", Date = new DateTime(2026, 5, 30, 21, 0, 0), Location = "Lontoo", Channel = "Yle Areena" },
+
+    // Jääkiekko
+    new Event { Id = 3, Sport = "Jääkiekko", Name = "MM-kisat: Suomi - Ruotsi", Date = new DateTime(2025, 5, 15, 20, 0, 0), Location = "Praha", Channel = "MTV3" },
+    new Event { Id = 4, Sport = "Jääkiekko", Name = "NHL Stanley Cup - Finaali 7. peli", Date = new DateTime(2026, 6, 12, 2, 0, 0), Location = "Denver", Channel = "Viaplay" },
+
+    // Koripallo
+    new Event { Id = 5, Sport = "Koripallo", Name = "NBA Finaali - Game 1", Date = new DateTime(2026, 6, 5, 4, 0, 0), Location = "Los Angeles", Channel = "NBA TV" },
+    new Event { Id = 6, Sport = "Koripallo", Name = "Susijengi - Espanja", Date = new DateTime(2025, 11, 12, 19, 0, 0), Location = "Helsinki", Channel = "Yle" },
+
+    // Amerikkalainen jalkapallo
+    new Event { Id = 7, Sport = "Amerikkalainen jalkapallo", Name = "Super Bowl LX", Date = new DateTime(2026, 2, 8, 1, 30, 0), Location = "Las Vegas", Channel = "Nelonen" },
+
+    // Golf
+    new Event { Id = 8, Sport = "Golf", Name = "The Masters", Date = new DateTime(2026, 4, 9, 15, 0, 0), Location = "Augusta", Channel = "Eurosport" },
+    new Event { Id = 9, Sport = "Golf", Name = "Ryder Cup", Date = new DateTime(2027, 9, 24, 10, 0, 0), Location = "Rooma", Channel = "V Sport Golf" },
+
+    // Yleisurheilu
+    new Event { Id = 10, Sport = "Yleisurheilu", Name = "MM-kisat 100m finaali", Date = new DateTime(2025, 8, 23, 21, 0, 0), Location = "Tokio", Channel = "Yle" },
+    new Event { Id = 11, Sport = "Yleisurheilu", Name = "Olympialaiset: Keihään finaali", Date = new DateTime(2028, 7, 28, 19, 0, 0), Location = "Los Angeles", Channel = "Discovery+" },
+
+    // Formula 1
+    new Event { Id = 12, Sport = "Formula 1", Name = "Monacon GP", Date = new DateTime(2025, 5, 25, 16, 0, 0), Location = "Monte Carlo", Channel = "Viaplay" },
+    new Event { Id = 13, Sport = "Formula 1", Name = "Suomen GP", Date = new DateTime(2027, 7, 18, 16, 0, 0), Location = "KymiRing", Channel = "MTV3" },
+
+    // Tennis
+    new Event { Id = 14, Sport = "Tennis", Name = "Wimbledon Finaali", Date = new DateTime(2026, 7, 12, 15, 0, 0), Location = "Lontoo", Channel = "Eurosport" },
+    new Event { Id = 15, Sport = "Tennis", Name = "US Open - Miesten finaali", Date = new DateTime(2025, 9, 7, 23, 0, 0), Location = "New York", Channel = "Eurosport" },
+
+    // Muita lajeja
+    new Event { Id = 16, Sport = "Pyöräily", Name = "Tour de France - Loppu", Date = new DateTime(2025, 7, 27, 18, 0, 0), Location = "Pariisi", Channel = "Eurosport" },
+    new Event { Id = 17, Sport = "Uinti", Name = "Olympialaiset: 200m vapaauinti finaali", Date = new DateTime(2028, 7, 25, 17, 0, 0), Location = "Los Angeles", Channel = "Yle" },
+    new Event { Id = 18, Sport = "Mäkihyppy", Name = "Mäkiviikko", Date = new DateTime(2026, 1, 6, 19, 0, 0), Location = "Bischofshofen", Channel = "Eurosport" }
         };
+
+        // Lajit vasemmalle
+        var sports = Events.Select(e => e.Sport).Distinct().ToList();
+        sports.Insert(0, "Kaikki lajit");
+        SportsList.ItemsSource = sports;
+
+        // FilteredEvents
+        FilteredEvents = new ObservableCollection<Event>();
+        BindingContext = this;
+
+        UpdateFilteredEvents("Kaikki lajit");
 
         // Ladataan tallennetut Notify-arvot
         foreach (var e in Events)
         {
             e.Notify = Preferences.Get($"Notify_{e.Id}", false);
-            e.NotifyVisible = Preferences.Get("NotificationsEnabled", true);
+            // Näytä kellonappi vain tuleville tapahtumille
+            e.NotifyVisible = e.Date >= DateTime.Now && Preferences.Get("NotificationsEnabled", true);
         }
 
         BindingContext = this;
+    }
+
+    private void OnSportSelected(object sender, SelectionChangedEventArgs e)
+    {
+        if (e.CurrentSelection.FirstOrDefault() is not string selectedSport) return;
+        UpdateFilteredEvents(selectedSport);
+    }
+
+    private void OnUpcomingClicked(object sender, EventArgs e)
+    {
+        showUpcoming = true;
+        UpcomingButton.BackgroundColor = Colors.Blue;
+        UpcomingButton.TextColor = Colors.White;
+        PastButton.TextColor = Colors.Black;
+        PastButton.BackgroundColor = Colors.LightGray;
+        UpdateFilteredEvents(SportsList.SelectedItem as string ?? "Kaikki lajit");
+    }
+
+    private void OnPastClicked(object sender, EventArgs e)
+    {
+        showUpcoming = false;
+        UpcomingButton.BackgroundColor = Colors.LightGray;
+        UpcomingButton.TextColor = Colors.Black;
+        PastButton.TextColor = Colors.White;
+        PastButton.BackgroundColor = Colors.Blue;
+        UpdateFilteredEvents(SportsList.SelectedItem as string ?? "Kaikki lajit");
+    }
+
+    private void UpdateFilteredEvents(string selectedSport)
+    {
+        FilteredEvents.Clear();
+        var query = Events.Where(ev => showUpcoming ? ev.Date >= DateTime.Now : ev.Date < DateTime.Now);
+
+        if (!string.IsNullOrEmpty(selectedSport) && selectedSport != "Kaikki lajit")
+            query = query.Where(ev => ev.Sport == selectedSport);
+
+        foreach (var ev in query.OrderBy(ev => ev.Date))
+            FilteredEvents.Add(ev);
     }
 
     private void OnClockClicked(object sender, EventArgs e)
@@ -48,7 +134,7 @@ public partial class EventsListPage : ContentPage
             if (evt.Notify)
             {
                 var notifyTime = evt.Date;
-                DisplayAlert("Ilmoitus ajastettu", $"Saat ilmoituksen tapahtumasta {evt.Name} klo {notifyTime:HH:mm}", "OK");
+                DisplayAlert("Ilmoitus ajastettu", $"Saat ilmoituksen tapahtumasta {evt.Name}, {evt.Date}", "OK");
                 ScheduleNotification(evt);
             }
             else
@@ -100,5 +186,6 @@ public partial class EventsListPage : ContentPage
     private void CancelNotification(Event evt)
     {
         LocalNotificationCenter.Current.Cancel(evt.Id);
+        DisplayAlert("Ilmoitus poistettu", $"Et saa ilmoitusta tapahtumasta {evt.Name}, {evt.Date}", "OK");
     }
 }
