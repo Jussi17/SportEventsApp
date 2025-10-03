@@ -16,7 +16,7 @@ namespace SportEventsApp.Pages;
 
 public partial class EventsListPage : ContentPage
 {
-    public ObservableCollection<Event> Events { get; set; }
+    public static ObservableCollection<Event> Events { get; set; }
     public ObservableCollection<Event> FilteredEvents { get; set; }
 
     private bool showUpcoming = true; // Tulevat oletuksena
@@ -84,6 +84,11 @@ public partial class EventsListPage : ContentPage
         }
 
         BindingContext = this;
+    }
+
+    public static ObservableCollection<Event> GetAllEvents()
+    {
+        return Events;
     }
 
     private void OnSportSelected(object sender, SelectionChangedEventArgs e)
