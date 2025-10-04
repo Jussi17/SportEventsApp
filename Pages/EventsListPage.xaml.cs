@@ -36,7 +36,7 @@ public partial class EventsListPage : ContentPage
     new Event { Id = 4, Sport = "J‰‰kiekko", Name = "NHL Stanley Cup - Finaali 7. peli", Date = new DateTime(2026, 6, 12, 2, 0, 0), Location = "Denver", Channel = "Viaplay" },
 
     // Koripallo
-    new Event { Id = 5, Sport = "Koripallo", Name = "NBA Finaali - Game 1", Date = new DateTime(2026, 6, 5, 4, 0, 0), Location = "Los Angeles", Channel = "NBA TV" },
+    new Event { Id = 5, Sport = "Koripallo", Name = "NBA Finaali - Game 1", Date = new DateTime(2026, 6, 5, 4, 0, 0), Location = "Los Angeles", Channel = "Prime Video" },
     new Event { Id = 6, Sport = "Koripallo", Name = "Susijengi - Espanja", Date = new DateTime(2025, 11, 12, 19, 0, 0), Location = "Helsinki", Channel = "Yle" },
 
     // Amerikkalainen jalkapallo
@@ -89,6 +89,14 @@ public partial class EventsListPage : ContentPage
     public static ObservableCollection<Event> GetAllEvents()
     {
         return Events;
+    }
+
+    private async void OnEventTapped(object sender, EventArgs e)
+    {
+        if (sender is Grid grid && grid.BindingContext is Event evt)
+        {
+            await Navigation.PushAsync(new EventCardPage(evt));
+        }
     }
 
     private void OnSportSelected(object sender, SelectionChangedEventArgs e)
@@ -192,5 +200,43 @@ public partial class EventsListPage : ContentPage
     {
         LocalNotificationCenter.Current.Cancel(evt.Id);
         DisplayAlert("Ilmoitus poistettu", $"Et saa ilmoitusta tapahtumasta {evt.Name}, {evt.Date}", "OK");
+    }
+
+    // Lajilistan hover-efekti
+    private void OnSportPointerEntered(object sender, PointerEventArgs e)
+    {
+        if (sender is Grid grid && grid.Parent is Frame frame)
+        {
+            frame.Scale = 1.05;
+            frame.BackgroundColor = Color.FromArgb("#0066CC"); // Tummempi sininen
+        }
+    }
+
+    private void OnSportPointerExited(object sender, PointerEventArgs e)
+    {
+        if (sender is Grid grid && grid.Parent is Frame frame)
+        {
+            frame.Scale = 1.0;
+            frame.BackgroundColor = Colors.Blue;
+        }
+    }
+
+    // Tapahtumien hover-efekti
+    private void OnEventPointerEntered(object sender, PointerEventArgs e)
+    {
+        if (sender is Grid grid && grid.Parent is Frame frame)
+        {
+            frame.Scale = 1.02;
+            frame.Opacity = 0.9;
+        }
+    }
+
+    private void OnEventPointerExited(object sender, PointerEventArgs e)
+    {
+        if (sender is Grid grid && grid.Parent is Frame frame)
+        {
+            frame.Scale = 1.0;
+            frame.Opacity = 1.0;
+        }
     }
 }

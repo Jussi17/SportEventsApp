@@ -18,7 +18,8 @@
                 Margin="0,0,0,10"
                 FontAttributes="Bold"
                 FontSize="14"
-                Text="Valitse päivä:" />
+                HorizontalTextAlignment="Center"
+                Text="Valitse päivä" />
             <Border
                 Padding="10"
                 BackgroundColor="{AppThemeBinding Light=White,

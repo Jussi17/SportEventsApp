@@ -63,6 +63,11 @@
             Route="CalendarPage" />
 
         <ShellContent
+            Title="Palvelut"
+            ContentTemplate="{DataTemplate pages:PalveluPage}"
+            Route="PalveluPage" />
+
+        <ShellContent
             Title="Hallinta"
             ContentTemplate="{DataTemplate pages:AdminPage}"
             Route="AdminPage" />

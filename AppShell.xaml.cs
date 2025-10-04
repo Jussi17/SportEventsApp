@@ -19,6 +19,7 @@ public partial class AppShell : Shell
         Routing.RegisterRoute("CalendarPage", typeof(Pages.CalendarPage));
         Routing.RegisterRoute("EventCardPage", typeof(Pages.EventCardPage));
         Routing.RegisterRoute("EventsListPage", typeof(Pages.EventsListPage));
+        Routing.RegisterRoute("PalveluPage", typeof(Pages.PalveluPage));
 
         // Käytetään vain Navigating-tapahtumaa (EI overridea)
         this.Navigating += AppShell_Navigating;

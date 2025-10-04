@@ -59,12 +59,17 @@
                         BorderColor="DarkBlue"
                         CornerRadius="5"
                         HasShadow="False">
-                        <Label
-                            FontSize="14"
-                            HorizontalOptions="Center"
-                            Text="{Binding}"
-                            TextColor="White"
-                            VerticalOptions="Center" />
+                        <Grid>
+                            <Grid.GestureRecognizers>
+                                <PointerGestureRecognizer PointerEntered="OnSportPointerEntered" PointerExited="OnSportPointerExited" />
+                            </Grid.GestureRecognizers>
+                            <Label
+                                FontSize="14"
+                                HorizontalOptions="Center"
+                                Text="{Binding}"
+                                TextColor="White"
+                                VerticalOptions="Center" />
+                        </Grid>
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
@@ -97,6 +102,11 @@
                         CornerRadius="10">
 
                         <Grid>
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnEventTapped" />
+                                <PointerGestureRecognizer PointerEntered="OnEventPointerEntered" PointerExited="OnEventPointerExited" />
+                            </Grid.GestureRecognizers>
+
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
