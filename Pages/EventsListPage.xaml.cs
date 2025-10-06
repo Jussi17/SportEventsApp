@@ -19,7 +19,7 @@ public partial class EventsListPage : ContentPage
     public static ObservableCollection<Event> Events { get; set; }
     public ObservableCollection<Event> FilteredEvents { get; set; }
 
-    private bool showUpcoming = true; // Tulevat oletuksena
+    private bool showUpcoming = true; // Tulevat tapahtumat oletuksena
 
     public EventsListPage()
     {
@@ -125,6 +125,7 @@ public partial class EventsListPage : ContentPage
         UpdateFilteredEvents(SportsList.SelectedItem as string ?? "Kaikki lajit");
     }
 
+    // P‰ivitet‰‰n suodatetut tapahtumat valitun lajin ja ajankohdan perusteella
     private void UpdateFilteredEvents(string selectedSport)
     {
         FilteredEvents.Clear();
@@ -137,6 +138,7 @@ public partial class EventsListPage : ContentPage
             FilteredEvents.Add(ev);
     }
 
+    // Ilmoitusten k‰sittely
     private void OnClockClicked(object sender, EventArgs e)
     {
         if (sender is Button button && button.BindingContext is Event evt)
@@ -155,6 +157,7 @@ public partial class EventsListPage : ContentPage
         }
     }
 
+    // Aikatauluta ilmoitus
     private void ScheduleNotification(Event tapahtuma)
     {
         bool notificationsEnabled = Preferences.Get("NotificationsEnabled", true);
@@ -237,6 +240,25 @@ public partial class EventsListPage : ContentPage
         {
             frame.Scale = 1.0;
             frame.Opacity = 1.0;
+        }
+    }
+
+    // Tulevat / Menneet hover-efekti
+    private void OnButtonPointerEntered(object sender, PointerEventArgs e)
+    {
+        if (sender is Button btn)
+        {
+            btn.Scale = 1.05;
+            btn.Opacity = 0.9;
+        }
+    }
+
+    private void OnButtonPointerExited(object sender, PointerEventArgs e)
+    {
+        if (sender is Button btn)
+        {
+            btn.Scale = 1.0;
+            btn.Opacity = 1.0;
         }
     }
 }

@@ -35,12 +35,21 @@
                 BackgroundColor="Blue"
                 Clicked="OnUpcomingClicked"
                 Text="Tulevat"
-                TextColor="White" />
+                TextColor="White">
+                <Button.GestureRecognizers>
+                    <PointerGestureRecognizer PointerEntered="OnButtonPointerEntered" PointerExited="OnButtonPointerExited" />
+                </Button.GestureRecognizers>
+            </Button>
+
             <Button
                 x:Name="PastButton"
                 BackgroundColor="LightGray"
                 Clicked="OnPastClicked"
-                Text="Menneet" />
+                Text="Menneet">
+                <Button.GestureRecognizers>
+                    <PointerGestureRecognizer PointerEntered="OnButtonPointerEntered" PointerExited="OnButtonPointerExited" />
+                </Button.GestureRecognizers>
+            </Button>
         </StackLayout>
 
         <!--  Vasemmalla: Lajilista  -->
