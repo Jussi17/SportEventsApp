@@ -18,13 +18,14 @@ public partial class EventsListPage : ContentPage
 {
     public static ObservableCollection<Event> Events { get; set; }
     public ObservableCollection<Event> FilteredEvents { get; set; }
+    public static EventsListPage CurrentInstance { get; private set; }
 
-    private bool showUpcoming = true; // Tulevat tapahtumat oletuksena
+    public bool showUpcoming = true; // Tulevat tapahtumat oletuksena
 
     public EventsListPage()
     {
         InitializeComponent();
-
+        CurrentInstance = this;
         Events = new ObservableCollection<Event>
         {
      // Jalkapallo
@@ -89,6 +90,15 @@ public partial class EventsListPage : ContentPage
     public static ObservableCollection<Event> GetAllEvents()
     {
         return Events;
+    }
+
+    public void AddAndRefreshEvent(Event newEvent)
+    {
+        // Lis‰‰ staattiseen Events-kokoelmaan
+        Events.Add(newEvent);
+
+        // P‰ivit‰ FilteredEvents suodatuksen ja j‰rjestyksen mukaisesti
+        UpdateFilteredEvents(SportsList.SelectedItem as string ?? "Kaikki lajit");
     }
 
     private async void OnEventTapped(object sender, EventArgs e)

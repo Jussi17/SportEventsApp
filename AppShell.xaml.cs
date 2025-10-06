@@ -1,7 +1,6 @@
 ﻿using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
 using System;
-using System.Diagnostics;
 
 namespace SportEventsApp;
 
@@ -21,17 +20,15 @@ public partial class AppShell : Shell
         Routing.RegisterRoute("EventsListPage", typeof(Pages.EventsListPage));
         Routing.RegisterRoute("PalveluPage", typeof(Pages.PalveluPage));
 
-        // Käytetään vain Navigating-tapahtumaa (EI overridea)
         this.Navigating += AppShell_Navigating;
 
-        // Päivitä login-valikon teksti käynnistyksessä
         UpdateLoginMenuItem();
     }
 
-    // Navigoinnin seuranta: tarkistetaan mihin ollaan menossa
     private void AppShell_Navigating(object sender, ShellNavigatingEventArgs args)
     {
         var target = args?.Target?.Location?.OriginalString ?? string.Empty;
+
         if (!string.IsNullOrEmpty(target) &&
             target.IndexOf("AdminPage", StringComparison.OrdinalIgnoreCase) >= 0)
         {
@@ -46,39 +43,34 @@ public partial class AppShell : Shell
 
     private bool IsUserLoggedIn() => Preferences.Get("IsLoggedIn", false);
 
-    // LoginMenuItem Clicked handler
     private async void OnLoginClicked(object sender, EventArgs e)
     {
         bool loggedIn = IsUserLoggedIn();
 
         if (!loggedIn)
         {
-            // Päästetään käyttäjä LoginPageen — siellä hoidetaan kirjautuminen
-            await Shell.Current.GoToAsync("LoginPage");
+            await Shell.Current.GoToAsync("/LoginPage");
         }
         else
         {
-            // Uloskirjautuminen
             Preferences.Set("IsLoggedIn", false);
             UpdateLoginMenuItem();
 
-            // Jos olet Admin-sivulla, ohjataan pois (esim. etusivulle)
-            var current = Shell.Current.CurrentState.Location.OriginalString ?? string.Empty;
-            if (current.IndexOf("AdminPage", StringComparison.OrdinalIgnoreCase) >= 0)
+            var current = Shell.Current?.CurrentState?.Location?.OriginalString ?? string.Empty;
+            if (!string.IsNullOrEmpty(current) &&
+                current.IndexOf("AdminPage", StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                await Shell.Current.GoToAsync("//"); // mene roottiin / etusivulle
+                await Shell.Current.GoToAsync("///"); // Absoluuttinen reitti etusivulle
             }
         }
     }
 
-    // Päivitä valikon teksti kirjautumisen mukaan
     public void UpdateLoginMenuItem()
     {
         if (LoginMenuItem == null) return;
         LoginMenuItem.Text = IsUserLoggedIn() ? "Kirjaudu ulos" : "Kirjaudu sisään";
     }
 
-    // Teeman koodi + lataus (pidetään ennallaan)
     private void TeemaToggled(object sender, ToggledEventArgs e)
     {
         bool isDarkMode = e.Value;
@@ -94,6 +86,7 @@ public partial class AppShell : Shell
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+
         LoadThemePreference();
         LoadNotificationPreference();
         UpdateLoginMenuItem();
@@ -101,7 +94,8 @@ public partial class AppShell : Shell
         if (_pendingLoginRedirect)
         {
             _pendingLoginRedirect = false;
-            await Shell.Current.GoToAsync("LoginPage");
+            await Task.Delay(50); // Varmistaa, että Shell on valmis
+            await Shell.Current.GoToAsync("/LoginPage");
         }
     }
 
@@ -138,6 +132,4 @@ public partial class AppShell : Shell
             NotificationSwitch.ThumbColor = enabled ? Colors.White : Colors.Blue;
         }
     }
-
-
 }

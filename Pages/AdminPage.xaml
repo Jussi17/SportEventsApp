@@ -15,18 +15,40 @@
                 HorizontalOptions="Center"
                 Text="Lisää uusi tapahtuma" />
 
-            <Entry x:Name="NameEntry" Placeholder="Tapahtuman nimi" />
-            <Entry x:Name="LocationEntry" Placeholder="Paikka" />
-            <DatePicker x:Name="DatePicker" />
-            <TimePicker x:Name="TimePicker" />
-            <Entry x:Name="ChannelEntry" Placeholder="Kanava / suoratoisto" />
+            <Entry
+                x:Name="SportEntry"
+                Placeholder="Laji"
+                WidthRequest="400" />
+
+            <Entry
+                x:Name="NameEntry"
+                Placeholder="Tapahtuman nimi"
+                WidthRequest="400" />
+            <Entry
+                x:Name="LocationEntry"
+                Placeholder="Paikka"
+                WidthRequest="400" />
+            <DatePicker x:Name="DatePicker" WidthRequest="400" />
+            <TimePicker
+                x:Name="TimePicker"
+                Format="HH:mm"
+                WidthRequest="400" />
+            <Entry
+                x:Name="ChannelEntry"
+                Placeholder="Kanava / suoratoisto"
+                WidthRequest="400" />
+            <Entry
+                x:Name="DescriptionEntry"
+                Placeholder="Lisätiedot"
+                WidthRequest="400" />
 
             <Button
                 BackgroundColor="#1976D2"
                 Clicked="OnAddEventClicked"
                 CornerRadius="8"
                 Text="Lisää tapahtuma"
-                TextColor="White" />
+                TextColor="White"
+                WidthRequest="400" />
 
             <CollectionView
                 x:Name="AdminEventsCollection"
@@ -40,6 +62,10 @@
                             CornerRadius="8"
                             HasShadow="True">
                             <VerticalStackLayout>
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="16"
+                                    Text="{Binding Sport}" />
                                 <Label
                                     FontAttributes="Bold"
                                     FontSize="16"

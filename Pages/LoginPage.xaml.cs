@@ -14,7 +14,7 @@ public partial class LoginPage : ContentPage
             Preferences.Set("IsLoggedIn", true);
             // P‰ivitet‰‰n AppShellin nappi teksti‰ varten
             (Shell.Current as AppShell)?.UpdateLoginMenuItem();
-            await Shell.Current.GoToAsync("AdminPage");
+            await Shell.Current.GoToAsync("///AdminPage");
         }
         else
         {

@@ -14,7 +14,7 @@ public class Event : INotifyPropertyChanged
     public string Channel { get; set; }
     public string Description { get; set; }
 
-    private bool _notify;
+    private bool _notify; // Tämä on backing field Notify-ominaisuudelle
     public bool Notify
     {
         get => _notify;
