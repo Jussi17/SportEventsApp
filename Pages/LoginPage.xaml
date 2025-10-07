@@ -27,5 +27,11 @@
             Clicked="OnLoginClicked"
             Text="Kirjaudu"
             TextColor="White" />
+        <Button
+            BackgroundColor="Red"
+            Clicked="GoToRegister_Clicked"
+            Text="Rekisteröidy"
+            TextColor="White" />
+
     </VerticalStackLayout>
 </ContentPage>

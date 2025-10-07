@@ -7,84 +7,110 @@
     Title="Hallintapaneeli">
 
     <ScrollView>
-        <VerticalStackLayout Padding="15" Spacing="10">
+        <VerticalStackLayout Padding="20" Spacing="12">
 
+            <!--  Käyttäjätiedot  -->
             <Label
+                x:Name="UsernameLabel"
+                Margin="0,0,0,10"
                 FontAttributes="Bold"
-                FontSize="20"
+                FontSize="18"
                 HorizontalOptions="Center"
-                Text="Lisää uusi tapahtuma" />
+                TextColor="DarkSlateGray" />
 
-            <Entry
-                x:Name="SportEntry"
-                Placeholder="Laji"
-                WidthRequest="400" />
+            <!--  Ei oikeuksia -viesti  -->
+            <Label
+                x:Name="NoPermissionLabel"
+                Margin="0,40,0,0"
+                FontAttributes="Bold"
+                FontSize="16"
+                HorizontalOptions="Center"
+                IsVisible="False"
+                Text="Sinulla ei ole oikeuksia nähdä tätä sivua."
+                TextColor="Red" />
 
-            <Entry
-                x:Name="NameEntry"
-                Placeholder="Tapahtuman nimi"
-                WidthRequest="400" />
-            <Entry
-                x:Name="LocationEntry"
-                Placeholder="Paikka"
-                WidthRequest="400" />
-            <DatePicker x:Name="DatePicker" WidthRequest="400" />
-            <TimePicker
-                x:Name="TimePicker"
-                Format="HH:mm"
-                WidthRequest="400" />
-            <Entry
-                x:Name="ChannelEntry"
-                Placeholder="Kanava / suoratoisto"
-                WidthRequest="400" />
-            <Entry
-                x:Name="DescriptionEntry"
-                Placeholder="Lisätiedot"
-                WidthRequest="400" />
+            <!--  Lomake näkyy vain admineille  -->
+            <StackLayout x:Name="FormContainer" IsVisible="False">
 
-            <Button
-                BackgroundColor="#1976D2"
-                Clicked="OnAddEventClicked"
-                CornerRadius="8"
-                Text="Lisää tapahtuma"
-                TextColor="White"
-                WidthRequest="400" />
+                <Label
+                    Margin="0,0,0,10"
+                    FontAttributes="Bold"
+                    FontSize="20"
+                    HorizontalOptions="Center"
+                    Text="Lisää uusi tapahtuma" />
 
-            <CollectionView
-                x:Name="AdminEventsCollection"
-                Margin="0,20,0,0"
-                SelectionMode="None">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:Event">
-                        <Frame
-                            Margin="5"
-                            Padding="10"
-                            CornerRadius="8"
-                            HasShadow="True">
-                            <VerticalStackLayout>
-                                <Label
-                                    FontAttributes="Bold"
-                                    FontSize="16"
-                                    Text="{Binding Sport}" />
-                                <Label
-                                    FontAttributes="Bold"
-                                    FontSize="16"
-                                    Text="{Binding Name}" />
-                                <Label
-                                    FontSize="14"
-                                    Text="{Binding Location}"
-                                    TextColor="Gray" />
-                                <Label FontSize="14" Text="{Binding Date, StringFormat='{0:dd.MM.yyyy HH:mm}'}" />
-                                <Label
-                                    FontAttributes="Bold"
-                                    FontSize="14"
-                                    Text="{Binding Channel}"
-                                    TextColor="DarkBlue" />
-                            </VerticalStackLayout>
-                        </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                <Entry
+                    x:Name="SportEntry"
+                    Placeholder="Laji"
+                    WidthRequest="400" />
+                <Entry
+                    x:Name="NameEntry"
+                    Placeholder="Tapahtuman nimi"
+                    WidthRequest="400" />
+                <Entry
+                    x:Name="LocationEntry"
+                    Placeholder="Paikka"
+                    WidthRequest="400" />
+                <DatePicker x:Name="DatePicker" WidthRequest="400" />
+                <TimePicker
+                    x:Name="TimePicker"
+                    Format="HH:mm"
+                    WidthRequest="400" />
+                <Entry
+                    x:Name="ChannelEntry"
+                    Placeholder="Kanava / suoratoisto"
+                    WidthRequest="400" />
+                <Entry
+                    x:Name="DescriptionEntry"
+                    Placeholder="Lisätiedot"
+                    WidthRequest="400" />
+
+                <Button
+                    Margin="0,10,0,0"
+                    BackgroundColor="#1976D2"
+                    Clicked="OnAddEventClicked"
+                    CornerRadius="8"
+                    Text="Lisää tapahtuma"
+                    TextColor="White"
+                    WidthRequest="400" />
+
+                <!--  Tapahtumalista  -->
+                <CollectionView
+                    x:Name="AdminEventsCollection"
+                    Margin="0,20,0,0"
+                    SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Event">
+                            <Frame
+                                Margin="5"
+                                Padding="10"
+                                CornerRadius="8"
+                                HasShadow="True">
+                                <VerticalStackLayout>
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="16"
+                                        Text="{Binding Sport}" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="16"
+                                        Text="{Binding Name}" />
+                                    <Label
+                                        FontSize="14"
+                                        Text="{Binding Location}"
+                                        TextColor="Gray" />
+                                    <Label FontSize="14" Text="{Binding Date, StringFormat='{0:dd.MM.yyyy HH:mm}'}" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="14"
+                                        Text="{Binding Channel}"
+                                        TextColor="DarkBlue" />
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
 
         </VerticalStackLayout>
     </ScrollView>

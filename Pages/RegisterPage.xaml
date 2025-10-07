@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SportEventsApp.Pages.RegisterPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Rekisteröidy">
+    <VerticalStackLayout Padding="20" Spacing="15">
+
+        <Label
+            FontAttributes="Bold"
+            FontSize="20"
+            HorizontalOptions="Center"
+            Text="Rekisteröityminen" />
+
+        <Entry
+            x:Name="UsernameEntry"
+            Placeholder="Käyttäjätunnus"
+            WidthRequest="400" />
+        <Entry
+            x:Name="PasswordEntry"
+            IsPassword="True"
+            Placeholder="Salasana"
+            WidthRequest="400" />
+
+        <Picker
+            x:Name="RolePicker"
+            Title="Valitse rooli"
+            WidthRequest="400">
+            <Picker.ItemsSource>
+                <x:Array Type="{x:Type x:String}">
+                    <x:String>user</x:String>
+                    <x:String>admin</x:String>
+                </x:Array>
+            </Picker.ItemsSource>
+        </Picker>
+
+        <Button
+            Clicked="Register_Clicked"
+            Text="Rekisteröidy"
+            WidthRequest="400" />
+        <Label
+            x:Name="MessageLabel"
+            HorizontalOptions="Center"
+            TextColor="Red" />
+    </VerticalStackLayout>
+</ContentPage>
+

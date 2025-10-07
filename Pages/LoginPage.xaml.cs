@@ -1,24 +1,47 @@
-namespace SportEventsApp.Pages;
+using SportEventsApp.Services;
+using SportEventsApp.Models;
 
-public partial class LoginPage : ContentPage
+namespace SportEventsApp.Pages
 {
-    public LoginPage()
+    public partial class LoginPage : ContentPage
     {
-        InitializeComponent();
-    }
-
-    private async void OnLoginClicked(object sender, EventArgs e)
-    {
-        if (UsernameEntry.Text == "testi" && PasswordEntry.Text == "salasana")
+        public LoginPage()
         {
-            Preferences.Set("IsLoggedIn", true);
-            // P‰ivitet‰‰n AppShellin nappi teksti‰ varten
-            (Shell.Current as AppShell)?.UpdateLoginMenuItem();
-            await Shell.Current.GoToAsync("///AdminPage");
+            InitializeComponent();
         }
-        else
+
+        private async void OnLoginClicked(object sender, EventArgs e)
         {
-            await DisplayAlert("Virhe", "V‰‰r‰t tunnukset", "OK");
+            var username = UsernameEntry.Text?.Trim();
+            var password = PasswordEntry.Text?.Trim();
+
+            var user = UserService.Login(username, password);
+
+            if (user != null)
+            {
+                // Tallennetaan kirjautumistila ja rooli
+                Preferences.Set("IsLoggedIn", true);
+                Preferences.Set("Username", user.Username);
+                Preferences.Set("Role", user.Role);
+
+                // P‰ivitet‰‰n AppShellin login-napin teksti
+                (Shell.Current as AppShell)?.UpdateLoginMenuItem();
+
+                // Ohjataan roolin mukaan
+                if (user.Role == "admin")
+                    await Shell.Current.GoToAsync("/AdminPage");
+                else
+                    await Shell.Current.GoToAsync("/EventsListPage");
+            }
+            else
+            {
+                await DisplayAlert("Virhe", "V‰‰r‰ k‰ytt‰j‰tunnus tai salasana", "OK");
+            }
+        }
+
+        private async void GoToRegister_Clicked(object sender, EventArgs e)
+        {
+            await Shell.Current.GoToAsync("/RegisterPage");
         }
     }
 }

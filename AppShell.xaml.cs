@@ -19,6 +19,7 @@ public partial class AppShell : Shell
         Routing.RegisterRoute("EventCardPage", typeof(Pages.EventCardPage));
         Routing.RegisterRoute("EventsListPage", typeof(Pages.EventsListPage));
         Routing.RegisterRoute("PalveluPage", typeof(Pages.PalveluPage));
+        Routing.RegisterRoute("RegisterPage", typeof(Pages.RegisterPage));
 
         this.Navigating += AppShell_Navigating;
 
@@ -67,8 +68,9 @@ public partial class AppShell : Shell
 
     public void UpdateLoginMenuItem()
     {
+        var username = Preferences.Get("Username", "");
         if (LoginMenuItem == null) return;
-        LoginMenuItem.Text = IsUserLoggedIn() ? "Kirjaudu ulos" : "Kirjaudu sisään";
+        LoginMenuItem.Text = IsUserLoggedIn() ? $"Kirjaudu ulos ({username})" : "Kirjaudu sisään";
     }
 
     private void TeemaToggled(object sender, ToggledEventArgs e)
