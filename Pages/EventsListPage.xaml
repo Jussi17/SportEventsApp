@@ -163,13 +163,23 @@
                                     BackgroundColor="LightYellow"
                                     Clicked="OnEditEventClicked"
                                     FontSize="12"
-                                    Text="Muokkaa" />
+                                    Text="Muokkaa">
+                                    <Button.GestureRecognizers>
+                                        <PointerGestureRecognizer PointerEntered="OnButtonPointerEntered" PointerExited="OnButtonPointerExited" />
+                                    </Button.GestureRecognizers>
+                                </Button>
+
                                 <Button
                                     BackgroundColor="LightCoral"
                                     Clicked="OnDeleteEventClicked"
                                     FontSize="12"
-                                    Text="Poista" />
+                                    Text="Poista">
+                                    <Button.GestureRecognizers>
+                                        <PointerGestureRecognizer PointerEntered="OnButtonPointerEntered" PointerExited="OnButtonPointerExited" />
+                                    </Button.GestureRecognizers>
+                                </Button>
                             </HorizontalStackLayout>
+
                         </Grid>
                     </Frame>
                 </DataTemplate>
