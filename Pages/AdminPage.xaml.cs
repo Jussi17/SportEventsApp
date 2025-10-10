@@ -13,27 +13,20 @@ public partial class AdminPage : ContentPage
     {
         base.OnAppearing();
 
-        var username = Preferences.Get("Username", "");
-        var role = Preferences.Get("Role", "user");
-        var isLoggedIn = Preferences.Get("IsLoggedIn", false);
-
-        // Tarkistetaan kirjautuminen aina kun sivu tulee näkyviin
         if (!Preferences.Get("IsLoggedIn", false))
         {
             Shell.Current.GoToAsync("//LoginPage");
+            return;  
         }
+
+        var username = Preferences.Get("Username", "");
+        var role = Preferences.Get("Role", "user");
+
         UsernameLabel.Text = $"Kirjautunut: {username} ({role})";
 
-        if (role != "admin")
-        {
-            FormContainer.IsVisible = false;
-            NoPermissionLabel.IsVisible = true;
-        }
-        else
-        {
-            FormContainer.IsVisible = true;
-            NoPermissionLabel.IsVisible = false;
-        }
+        bool isAdmin = role == "admin";
+        FormContainer.IsVisible = isAdmin;
+        NoPermissionLabel.IsVisible = !isAdmin;
     }
     public AdminPage()
     {

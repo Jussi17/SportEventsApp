@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SportEventsApp.Helpers;
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -14,7 +15,13 @@ public class Event : INotifyPropertyChanged
     public string Channel { get; set; }
     public string Description { get; set; }
 
-    private bool _notify; // Tämä on backing field Notify-ominaisuudelle
+    public bool IsAdminVisible
+    {
+        get => UserRoleHelper.IsAdmin;
+        set { OnPropertyChanged(); }  
+    }
+
+    private bool _notify;
     public bool Notify
     {
         get => _notify;
@@ -42,6 +49,6 @@ public class Event : INotifyPropertyChanged
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
-    protected void OnPropertyChanged([CallerMemberName] string propName = null) =>
+    public void OnPropertyChanged([CallerMemberName] string propName = null) =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
 }

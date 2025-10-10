@@ -13,15 +13,14 @@ namespace SportEventsApp.Pages
         {
             var username = UsernameEntry.Text?.Trim();
             var password = PasswordEntry.Text?.Trim();
-            var role = RolePicker.SelectedItem?.ToString();
 
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || role == null)
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
                 MessageLabel.Text = "Täytä kaikki kentät.";
                 return;
             }
 
-            if (UserService.Register(username, password, role))
+            if (UserService.Register(username, password)) 
             {
                 await DisplayAlert("Onnistui", "Rekisteröinti onnistui!", "OK");
                 await Shell.Current.GoToAsync("/LoginPage");

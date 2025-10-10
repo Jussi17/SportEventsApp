@@ -4,25 +4,22 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:calendar="clr-namespace:Plugin.Maui.Calendar.Controls;assembly=Plugin.Maui.Calendar"
+    x:Name="EventsPageRoot"
     Title="Tapahtumat"
     Padding="10">
 
     <Grid ColumnSpacing="10" RowSpacing="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <!--  Tulevat/Menneet  -->
             <RowDefinition Height="*" />
-            <!--  Lajit + tapahtumat  -->
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="350" />
-            <!--  Lajit  -->
             <ColumnDefinition Width="*" />
-            <!--  Tapahtumat  -->
         </Grid.ColumnDefinitions>
 
-        <!--  Yläreunan napit: Tulevat / Menneet  -->
+        <!--  Tulevat / Menneet napit  -->
         <StackLayout
             Grid.Row="0"
             Grid.Column="0"
@@ -52,7 +49,7 @@
             </Button>
         </StackLayout>
 
-        <!--  Vasemmalla: Lajilista  -->
+        <!--  Lajilista  -->
         <CollectionView
             x:Name="SportsList"
             Grid.Row="1"
@@ -84,7 +81,7 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <!--  Oikealla: Tapahtumat, 2 rinnakkaista per rivi  -->
+        <!--  Tapahtumat  -->
         <CollectionView
             x:Name="EventsList"
             Grid.Row="1"
@@ -116,44 +113,34 @@
                                 <PointerGestureRecognizer PointerEntered="OnEventPointerEntered" PointerExited="OnEventPointerExited" />
                             </Grid.GestureRecognizers>
 
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
                             <!--  Tapahtuman tiedot  -->
-                            <VerticalStackLayout Grid.Column="0">
+                            <VerticalStackLayout Grid.Row="0" Grid.Column="0">
                                 <Label
                                     FontAttributes="Bold"
                                     FontSize="12"
-                                    Text="{Binding Sport}"
-                                    TextColor="{AppThemeBinding Light=Black,
-                                                                Dark=White}" />
+                                    Text="{Binding Sport}" />
                                 <Label
                                     FontAttributes="Bold"
                                     FontSize="18"
-                                    Text="{Binding Name}"
-                                    TextColor="{AppThemeBinding Light=Black,
-                                                                Dark=White}" />
-                                <Label
-                                    FontSize="14"
-                                    Text="{Binding Date, StringFormat='⏰ {0:dd.MM.yyyy HH:mm}'}"
-                                    TextColor="{AppThemeBinding Light=Gray,
-                                                                Dark=LightGray}" />
-                                <Label
-                                    FontSize="14"
-                                    Text="{Binding Location, StringFormat='📍 {0}'}"
-                                    TextColor="{AppThemeBinding Light=Black,
-                                                                Dark=White}" />
-                                <Label
-                                    FontSize="14"
-                                    Text="{Binding Channel, StringFormat='📺 {0}'}"
-                                    TextColor="{AppThemeBinding Light=Gray,
-                                                                Dark=LightGray}" />
+                                    Text="{Binding Name}" />
+                                <Label FontSize="14" Text="{Binding Date, StringFormat='⏰ {0:dd.MM.yyyy HH:mm}'}" />
+                                <Label FontSize="14" Text="{Binding Location, StringFormat='📍 {0}'}" />
+                                <Label FontSize="14" Text="{Binding Channel, StringFormat='📺 {0}'}" />
                             </VerticalStackLayout>
 
                             <!--  Kellonappi  -->
                             <Button
+                                Grid.Row="0"
                                 Grid.Column="1"
                                 BackgroundColor="Transparent"
                                 Clicked="OnClockClicked"
@@ -163,6 +150,26 @@
                                 IsVisible="{Binding NotifyVisible}"
                                 VerticalOptions="Start"
                                 WidthRequest="28" />
+
+                            <!--  Admin-napit  -->
+                            <HorizontalStackLayout
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                Margin="0,10,0,0"
+                                IsVisible="{Binding IsAdminVisible}"
+                                Spacing="10">
+                                <Button
+                                    BackgroundColor="LightYellow"
+                                    Clicked="OnEditEventClicked"
+                                    FontSize="12"
+                                    Text="Muokkaa" />
+                                <Button
+                                    BackgroundColor="LightCoral"
+                                    Clicked="OnDeleteEventClicked"
+                                    FontSize="12"
+                                    Text="Poista" />
+                            </HorizontalStackLayout>
                         </Grid>
                     </Frame>
                 </DataTemplate>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
+using SportEventsApp.Helpers;
 using System;
 
 namespace SportEventsApp;
@@ -8,11 +9,12 @@ public partial class AppShell : Shell
 {
     private bool _pendingLoginRedirect = false;
     public static event EventHandler NotificationsChanged;
+    public static event EventHandler RoleChanged;
 
     public AppShell()
     {
         InitializeComponent();
-
+ 
         Routing.RegisterRoute("LoginPage", typeof(Pages.LoginPage));
         Routing.RegisterRoute("AdminPage", typeof(Pages.AdminPage));
         Routing.RegisterRoute("CalendarPage", typeof(Pages.CalendarPage));
@@ -34,12 +36,19 @@ public partial class AppShell : Shell
             target.IndexOf("AdminPage", StringComparison.OrdinalIgnoreCase) >= 0)
         {
             bool loggedIn = Preferences.Get("IsLoggedIn", false);
-            if (!loggedIn)
+            bool isAdmin = UserRoleHelper.IsAdmin;  
+
+            if (!loggedIn || !isAdmin)
             {
                 args.Cancel();
-                _pendingLoginRedirect = true;
+                _pendingLoginRedirect = true;  
             }
         }
+    }
+
+    public static void RaiseRoleChanged()
+    {
+        RoleChanged?.Invoke(null, EventArgs.Empty);  
     }
 
     private bool IsUserLoggedIn() => Preferences.Get("IsLoggedIn", false);
@@ -55,13 +64,20 @@ public partial class AppShell : Shell
         else
         {
             Preferences.Set("IsLoggedIn", false);
+            Preferences.Set("Role", "user");
+            Preferences.Remove("Username");
             UpdateLoginMenuItem();
+            RaiseRoleChanged();
 
             var current = Shell.Current?.CurrentState?.Location?.OriginalString ?? string.Empty;
             if (!string.IsNullOrEmpty(current) &&
                 current.IndexOf("AdminPage", StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                await Shell.Current.GoToAsync("///"); // Absoluuttinen reitti etusivulle
+                await Shell.Current.GoToAsync("///");
+            }
+            else
+            {
+                await Shell.Current.GoToAsync("///EventsListPage"); 
             }
         }
     }

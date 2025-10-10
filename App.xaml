@@ -3,9 +3,11 @@
     x:Class="SportEventsApp.App"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:helpers="clr-namespace:SportEventsApp.Helpers"
     xmlns:local="clr-namespace:SportEventsApp">
     <Application.Resources>
         <ResourceDictionary>
+            <helpers:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <Style TargetType="Switch">
                 <Setter Property="OnColor" Value="{AppThemeBinding Light=Red, Dark=Red}" />
                 <Setter Property="ThumbColor" Value="{AppThemeBinding Light=DarkBlue, Dark=White}" />

@@ -22,7 +22,7 @@
             Placeholder="Salasana"
             WidthRequest="400" />
 
-        <Picker
+        <!--<Picker
             x:Name="RolePicker"
             Title="Valitse rooli"
             WidthRequest="400">
@@ -32,7 +32,7 @@
                     <x:String>admin</x:String>
                 </x:Array>
             </Picker.ItemsSource>
-        </Picker>
+        </Picker>-->
 
         <Button
             Clicked="Register_Clicked"

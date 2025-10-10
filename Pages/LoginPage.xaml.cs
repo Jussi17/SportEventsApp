@@ -19,19 +19,13 @@ namespace SportEventsApp.Pages
 
             if (user != null)
             {
-                // Tallennetaan kirjautumistila ja rooli
                 Preferences.Set("IsLoggedIn", true);
                 Preferences.Set("Username", user.Username);
                 Preferences.Set("Role", user.Role);
 
-                // P‰ivitet‰‰n AppShellin login-napin teksti
                 (Shell.Current as AppShell)?.UpdateLoginMenuItem();
-
-                // Ohjataan roolin mukaan
-                if (user.Role == "admin")
-                    await Shell.Current.GoToAsync("/AdminPage");
-                else
-                    await Shell.Current.GoToAsync("/EventsListPage");
+                AppShell.RaiseRoleChanged(); 
+                await Shell.Current.GoToAsync("///EventsListPage");
             }
             else
             {
