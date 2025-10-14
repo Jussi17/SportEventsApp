@@ -1,5 +1,6 @@
 using Microsoft.Maui.Controls;
 using SportEventsApp.Models;
+using System.Threading.Tasks;
 
 namespace SportEventsApp.Pages
 {
@@ -9,6 +10,11 @@ namespace SportEventsApp.Pages
         {
             InitializeComponent();
             BindingContext = evt;
+        }
+
+        private async void BackButtonClicked(object sender, EventArgs e)
+        {
+            await Shell.Current.GoToAsync("..");
         }
     }
 }

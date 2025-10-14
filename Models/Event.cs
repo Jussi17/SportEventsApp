@@ -35,6 +35,7 @@ public class Event : INotifyPropertyChanged
     }
 
     public string BellImage => Notify ? "bell_filled.png" : "bell.png";
+    public string BackArrow = "nuoli.png";
 
     private bool _notifyVisible;
     public bool NotifyVisible

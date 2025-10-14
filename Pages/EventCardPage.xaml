@@ -17,6 +17,17 @@
             HasShadow="True">
 
             <VerticalStackLayout Spacing="10">
+                <Button
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    BackgroundColor="Transparent"
+                    Clicked="BackButtonClicked"
+                    HeightRequest="70"
+                    HorizontalOptions="End"
+                    ImageSource= "nuoli.png"
+                    IsVisible="True"
+                    VerticalOptions="Start"
+                    WidthRequest="90"/>
                 <Label
                     FontAttributes="Bold"
                     FontSize="24"
