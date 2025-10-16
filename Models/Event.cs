@@ -1,4 +1,5 @@
 ﻿using SportEventsApp.Helpers;
+using SQLite;
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -7,6 +8,7 @@ namespace SportEventsApp.Models;
 
 public class Event : INotifyPropertyChanged
 {
+    [PrimaryKey, AutoIncrement]
     public int Id { get; set; }
     public string Sport { get; set; }
     public string Name { get; set; }

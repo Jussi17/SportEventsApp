@@ -55,7 +55,6 @@ public partial class AdminPage : ContentPage
 
         var newEvent = new Event
         {
-            Id = EventsListPage.Events.Any() ? EventsListPage.Events.Max(ev => ev.Id) + 1 : 1,
             Sport = SportEntry.Text,
             Name = NameEntry.Text,
             Location = LocationEntry.Text,

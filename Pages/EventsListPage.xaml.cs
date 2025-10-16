@@ -9,6 +9,7 @@ using SportEventsApp.Popups;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -21,7 +22,8 @@ namespace SportEventsApp.Pages;
 
 public partial class EventsListPage : ContentPage, INotifyPropertyChanged
 {
-    public static ObservableCollection<Event> Events { get; set; }
+    private EventRepository repo = new EventRepository();
+    public static ObservableCollection<Event> Events { get; set; } = new ObservableCollection<Event>();
     private ObservableCollection<Event> _filteredEvents;
     public ObservableCollection<Event> FilteredEvents
     {
@@ -33,58 +35,18 @@ public partial class EventsListPage : ContentPage, INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
-
     public static EventsListPage CurrentInstance { get; private set; }
 
     public bool showUpcoming = true;
-
     public EventsListPage()
     {
         InitializeComponent();
+        LoadEventsDb();
         CurrentInstance = this;
 
         System.Diagnostics.Debug.WriteLine($"IsLoggedIn: {Preferences.Get("IsLoggedIn", false)}");
         System.Diagnostics.Debug.WriteLine($"Role: {Preferences.Get("Role", "NOT_SET")}");
         System.Diagnostics.Debug.WriteLine($"Username: {Preferences.Get("Username", "NOT_SET")}");
-
-        Events = new ObservableCollection<Event>
-        {
-            // Jalkapallo
-           new Event { Id = 1, Sport = "Jalkapallo", Name = "Veikkausliiga: HJK - KuPS", Date = new DateTime(2025, 7, 18, 18, 30, 0), Location = "Helsinki", Channel = "Ruutu+", Description = "J‰nnitt‰v‰ ottelu, jossa pelaavat kaksi Veikkausliigan huippujoukkuetta." },
-           new Event { Id = 2, Sport = "Jalkapallo", Name = "Mestarien liiga - Finaali", Date = new DateTime(2026, 5, 30, 21, 0, 0), Location = "Lontoo", Channel = "Yle Areena", Description = "Seurajoukkuekauden huipentuma, legendaarinen Mestarien Liigan finaali." },
-
-           // J‰‰kiekko
-           new Event { Id = 3, Sport = "J‰‰kiekko", Name = "MM-kisat: Suomi - Ruotsi", Date = new DateTime(2025, 5, 15, 20, 0, 0), Location = "Praha", Channel = "MTV3", Description = "Klassikko-ottelu. Leijonat kohtaa arkkivihollisensa Tre Kronorin." },
-           new Event { Id = 4, Sport = "J‰‰kiekko", Name = "NHL Stanley Cup - Finaali 7. peli", Date = new DateTime(2026, 6, 12, 2, 0, 0), Location = "Denver", Channel = "Viaplay", Description = "Mahdollinen ottelu. Ratkaiseva sarjan viimeinen ottelu." },
-
-           // Koripallo
-           new Event { Id = 5, Sport = "Koripallo", Name = "NBA Finaali - Game 1", Date = new DateTime(2026, 6, 5, 4, 0, 0), Location = "Los Angeles", Channel = "Prime Video", Description = "Maailman parhaan koripallosarjan finaalisarja k‰ynnistyy." },
-           new Event { Id = 6, Sport = "Koripallo", Name = "Susijengi - Espanja", Date = new DateTime(2025, 11, 12, 19, 0, 0), Location = "Helsinki", Channel = "Yle", Description = "EM-kisoissa upeasti pelanneen Susijengin ottelu huippumaata Espanjaa vastaan." },
-
-           // Amerikkalainen jalkapallo
-           new Event { Id = 7, Sport = "Amerikkalainen jalkapallo", Name = "Super Bowl LX", Date = new DateTime(2026, 2, 8, 1, 30, 0), Location = "Las Vegas", Channel = "Nelonen", Description = "Amerikkalaisen jalkapallon huikaiseva tapahtuma pelataan jo 60:nen kerran." },
-
-           // Golf
-           new Event { Id = 8, Sport = "Golf", Name = "The Masters", Date = new DateTime(2026, 4, 9, 15, 0, 0), Location = "Augusta", Channel = "Eurosport", Description = "Se kaikista suurin ja arvostetuin Golf-turnaus, jonka jokainen pelaaja unelmoi voittavansa." },
-           new Event { Id = 9, Sport = "Golf", Name = "Ryder Cup", Date = new DateTime(2027, 9, 24, 10, 0, 0), Location = "Rooma", Channel = "V Sport Golf", Description = "Pystyykˆ USA katkaisemaan Euroopan voittoputken Italiassa pelattavassa kilpailussa." },
-
-           // Yleisurheilu
-           new Event { Id = 10, Sport = "Yleisurheilu", Name = "MM-kisat 100m finaali", Date = new DateTime(2025, 8, 23, 21, 0, 0), Location = "Tokio", Channel = "Yle", Description = "Kuka onkaan maailman nopein ihminen?" },
-           new Event { Id = 11, Sport = "Yleisurheilu", Name = "Olympialaiset: Keih‰‰n finaali", Date = new DateTime(2028, 7, 28, 19, 0, 0), Location = "Los Angeles", Channel = "Discovery+", Description = "Suomen jokavuotinen mitalitoivo, joko vihdoin aukeaa Suomen mitalitili?" },
-
-           // Formula 1
-           new Event { Id = 12, Sport = "Formula 1", Name = "Monacon GP", Date = new DateTime(2025, 5, 25, 16, 0, 0), Location = "Monte Carlo", Channel = "Viaplay", Description = "Monacon ahtailla kaduilla kilpaillaan j‰lleen upeissa maisemissa." },
-           new Event { Id = 13, Sport = "Formula 1", Name = "Suomen GP", Date = new DateTime(2027, 7, 18, 16, 0, 0), Location = "KymiRing", Channel = "MTV3", Description = "Ensimm‰ist‰ kertaa Suomessa kilpaillaan Formula 1-luokassa." },
-
-           // Tennis
-           new Event { Id = 14, Sport = "Tennis", Name = "Wimbledon Finaali", Date = new DateTime(2026, 7, 12, 15, 0, 0), Location = "Lontoo", Channel = "Eurosport", Description = "Kaikkien tennisturnausten kuningas." },
-           new Event { Id = 15, Sport = "Tennis", Name = "US Open - Miesten finaali", Date = new DateTime(2025, 9, 7, 23, 0, 0), Location = "New York", Channel = "Eurosport", Description = "Kauden viimeinen Grand Slam-turnauksen loppuottelu." },
-
-           // Muita lajeja
-           new Event { Id = 16, Sport = "Pyˆr‰ily", Name = "Tour de France - Loppu", Date = new DateTime(2025, 7, 27, 18, 0, 0), Location = "Pariisi", Channel = "Eurosport", Description = "Legendaarisen pyˆr‰ilykilpailun ratkaiseva etappi." },
-           new Event { Id = 17, Sport = "Uinti", Name = "Olympialaiset: 200m vapaauinti finaali", Date = new DateTime(2028, 7, 25, 17, 0, 0), Location = "Los Angeles", Channel = "Yle", Description = "Kenen kunto ja nopeus on t‰ll‰ kertaa ylivertainen?" },
-           new Event { Id = 18, Sport = "M‰kihyppy", Name = "M‰kiviikko", Date = new DateTime(2026, 1, 6, 19, 0, 0), Location = "Bischofshofen", Channel = "Eurosport", Description = "M‰kiviikon p‰‰tˆskilpailu." }
-        };
 
         // Lajit vasemmalle (unchanged)
         var sports = Events.Select(e => e.Sport).Distinct().ToList();
@@ -105,7 +67,14 @@ public partial class EventsListPage : ContentPage, INotifyPropertyChanged
         AppShell.NotificationsChanged += OnNotificationsChanged;
         AppShell.RoleChanged += OnRoleChanged;
     }
-
+    public void LoadEventsDb()
+    {
+        Events.Clear();
+        foreach (var e in repo.GetAllEvents())
+        {
+            Events.Add(e);
+        }
+    }
     private void OnNotificationsChanged(object sender, EventArgs e)
     {
         RefreshEventVisibilities();
@@ -152,6 +121,7 @@ public partial class EventsListPage : ContentPage, INotifyPropertyChanged
     public void AddAndRefreshEvent(Event newEvent)
     {
         Events.Add(newEvent);
+        repo.InsertEvent(newEvent);
         UpdateFilteredEvents(SportsList.SelectedItem as string ?? "Kaikki lajit");
     }
 
@@ -322,6 +292,7 @@ public partial class EventsListPage : ContentPage, INotifyPropertyChanged
             bool confirm = await DisplayAlert("Vahvista poisto", $"Haluatko varmasti poistaa tapahtuman '{evt.Name}'?", "Kyll‰", "Peruuta");
             if (confirm)
             {
+                repo.DeleteEvent(evt);
                 Events.Remove(evt);
                 UpdateFilteredEvents(SportsList.SelectedItem as string ?? "Kaikki lajit");
             }
@@ -333,11 +304,13 @@ public partial class EventsListPage : ContentPage, INotifyPropertyChanged
         if (sender is Button button && button.BindingContext is Event evt)
         {
             var popup = new EditEventPopup(evt);
-            var result = await this.ShowPopupAsync<Event>(popup);
+            var popupResult = await this.ShowPopupAsync<Event>(popup);
+            var result = popupResult.Result;
 
             if (result != null)
             {
                 // P‰ivitet‰‰n UI
+                repo.UpdateEvent(result);
                 UpdateFilteredEvents(SportsList.SelectedItem as string ?? "Kaikki lajit");
             }
         }
