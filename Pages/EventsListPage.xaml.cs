@@ -67,6 +67,35 @@ public partial class EventsListPage : ContentPage, INotifyPropertyChanged
         AppShell.NotificationsChanged += OnNotificationsChanged;
         AppShell.RoleChanged += OnRoleChanged;
     }
+
+    private void OnPageSizeChanged(object sender, EventArgs e)
+    {
+        if (EventsPageRoot.Width < 600) // mobiili
+        {
+            Grid.SetColumn(SportsList, 0);
+            Grid.SetColumnSpan(SportsList, 2);
+
+            Grid.SetRow(EventsList, 2);
+            Grid.SetColumn(EventsList, 0);
+            Grid.SetColumnSpan(EventsList, 2);
+
+            if (EventsList.ItemsLayout is GridItemsLayout layout)
+                layout.Span = 1;
+        }
+        else // tabletti / vaakasuora
+        {
+            Grid.SetColumn(SportsList, 0);
+            Grid.SetColumnSpan(SportsList, 1);
+
+            Grid.SetRow(EventsList, 1);
+            Grid.SetColumn(EventsList, 1);
+            Grid.SetColumnSpan(EventsList, 1);
+
+            if (EventsList.ItemsLayout is GridItemsLayout layout)
+                layout.Span = 2;
+        }
+    }
+
     public void LoadEventsDb()
     {
         Events.Clear();
@@ -189,14 +218,16 @@ public partial class EventsListPage : ContentPage, INotifyPropertyChanged
 
     private void ScheduleNotification(Event tapahtuma)
     {
-        if (!Preferences.Get("NotificationsEnabled", true) || !tapahtuma.Notify) return;
+        if (!Preferences.Get("NotificationsEnabled", true) || !tapahtuma.Notify)
+            return;
 
 #if WINDOWS
-        ShowWindowsNotification(
-            "Ottelu tulossa!",
-            $"{tapahtuma.Name} alkaa {tapahtuma.Date:dd.MM.yyyy HH:mm}"
-        );
+    ShowWindowsNotification(
+        "Ottelu tulossa!",
+        $"{tapahtuma.Name} alkaa {tapahtuma.Date:dd.MM.yyyy HH:mm}"
+    );
 #else
+        // Muistutus mobiililaitteille
         var notification = new NotificationRequest
         {
             NotificationId = tapahtuma.Id,
@@ -204,24 +235,25 @@ public partial class EventsListPage : ContentPage, INotifyPropertyChanged
             Description = $"{tapahtuma.Name} alkaa {tapahtuma.Date:dd.MM.yyyy HH:mm}",
             Schedule = new NotificationRequestSchedule
             {
-                NotifyTime = DateTime.Now.AddSeconds(5)
+                NotifyTime = tapahtuma.Date // Ilmoitus tapahtuma-aikaan
             }
         };
+
         LocalNotificationCenter.Current.Show(notification);
 #endif
     }
 
 #if WINDOWS
-    private void ShowWindowsNotification(string title, string message)
-    {
-        var toastContent = new ToastContentBuilder()
-            .AddText(title)
-            .AddText(message)
-            .GetToastContent();
+private void ShowWindowsNotification(string title, string message)
+{
+    var toastContent = new ToastContentBuilder()
+        .AddText(title)
+        .AddText(message)
+        .GetToastContent();
 
-        var toast = new ToastNotification(toastContent.GetXml());
-        ToastNotificationManager.CreateToastNotifier("SportEventsApp").Show(toast);
-    }
+    var toast = new ToastNotification(toastContent.GetXml());
+    ToastNotificationManager.CreateToastNotifier("SportEventsApp").Show(toast);
+}
 #endif
 
     private void CancelNotification(Event evt)
@@ -269,19 +301,25 @@ public partial class EventsListPage : ContentPage, INotifyPropertyChanged
 
     private void OnButtonPointerEntered(object sender, PointerEventArgs e)
     {
-        if (sender is Button btn)
+        if (DeviceInfo.Platform == DevicePlatform.WinUI || DeviceInfo.Platform == DevicePlatform.MacCatalyst)
         {
-            btn.Scale = 1.05;
-            btn.Opacity = 0.9;
+            if (sender is Button btn)
+            {
+                btn.Scale = 1.05;
+                btn.Opacity = 0.9;
+            }
         }
     }
 
     private void OnButtonPointerExited(object sender, PointerEventArgs e)
     {
-        if (sender is Button btn)
+        if (DeviceInfo.Platform == DevicePlatform.WinUI || DeviceInfo.Platform == DevicePlatform.MacCatalyst)
         {
-            btn.Scale = 1.0;
-            btn.Opacity = 1.0;
+            if (sender is Button btn)
+            {
+                btn.Scale = 1.0;
+                btn.Opacity = 1.0;
+            }
         }
     }
 
