@@ -230,7 +230,7 @@ public partial class EventsListPage : ContentPage, INotifyPropertyChanged
         DisplayAlert("Ilmoitus poistettu", $"Et saa ilmoitusta tapahtumasta {evt.Name}, {evt.Date}", "OK");
     }
 
-    // Hover-efektit (sama kuin aiemmin)
+    // Hover-efektit
     private void OnSportPointerEntered(object sender, PointerEventArgs e)
     {
         if (sender is Grid grid && grid.Parent is Frame frame)

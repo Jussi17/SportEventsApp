@@ -17,6 +17,7 @@
             HasShadow="True">
 
             <VerticalStackLayout Spacing="10">
+                <!--  Tarpeetonta näyttää, koska MAUI:ssa on automaattisesta takaisin nuoli vasemmalla ylhäällä  -->
                 <Button
                     Grid.Row="0"
                     Grid.Column="1"
@@ -24,10 +25,10 @@
                     Clicked="BackButtonClicked"
                     HeightRequest="70"
                     HorizontalOptions="End"
-                    ImageSource= "nuoli.png"
-                    IsVisible="True"
+                    ImageSource="nuoli.png"
+                    IsVisible="False"
                     VerticalOptions="Start"
-                    WidthRequest="90"/>
+                    WidthRequest="90" />
                 <Label
                     FontAttributes="Bold"
                     FontSize="24"

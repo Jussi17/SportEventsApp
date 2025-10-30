@@ -33,6 +33,8 @@
                     DaysTitleMaximumLength="TwoChars"
                     DeselectedDayTextColor="{AppThemeBinding Light=Blue,
                                                              Dark=Aqua}"
+                    EventIndicatorColor="Red"
+                    Events="{Binding EventDates}"
                     FirstDayOfWeek="Monday"
                     HeightRequest="375"
                     OtherMonthDayColor="{AppThemeBinding Light=Black,
@@ -50,7 +52,10 @@
                 FontAttributes="Bold"
                 FontSize="16"
                 Text="{Binding SelectedDate, StringFormat='Tapahtumat {0:dd.MM.yyyy}'}" />
-            <CollectionView ItemsSource="{Binding FilteredEvents}" SelectionMode="None">
+            <CollectionView
+                ItemsSource="{Binding FilteredEvents}"
+                SelectionChanged="OnEventSelected"
+                SelectionMode="Single">
                 <CollectionView.EmptyView>
                     <Label
                         Margin="20"
