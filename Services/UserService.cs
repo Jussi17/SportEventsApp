@@ -1,25 +1,36 @@
 ﻿using SportEventsApp.Models;
-
+using Microsoft.Maui.Controls; //Application.Current
+using Microsoft.Extensions.DependencyInjection; //GetService
+using System.Diagnostics; 
 namespace SportEventsApp.Services
 {
     public static class UserService
     {
-        private static List<User> users = new()
+        private static UserRepository userRepo;
+        static UserService()
         {
-            new User { Username = "admin", Password = "admin123", Role = "admin" },
-            new User { Username = "user", Password = "user123", Role = "user" }
-        };
+            //Vähän voodoota, koska luokka on staattinen
+            userRepo = Application.Current?.Handler?.MauiContext?.Services?.GetService<UserRepository>();
+
+            if (userRepo == null)
+            {
+                Debug.WriteLine("UserRepo on null (UserService)");
+            }
+        }
 
         public static User? Login(string username, string password)
         {
-            return users.FirstOrDefault(u => u.Username == username && u.Password == password);
+            if (userRepo == null) return null;
+            return userRepo.GetAllUsers().FirstOrDefault(u => u.Username == username && u.Password == password);
         }
 
         public static bool Register(string username, string password)
         {
-            if (users.Any(u => u.Username == username))
+            if (userRepo == null) return false;
+
+            if (userRepo.GetAllUsers().Any(u => u.Username == username))
                 return false;
-            users.Add(new User { Username = username, Password = password, Role = "user" }); 
+            userRepo.InsertUser(new User { Username = username, Password = password, Role = "user" }); 
             return true;
         }
     }

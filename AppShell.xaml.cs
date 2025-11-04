@@ -1,7 +1,9 @@
 ﻿using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
 using SportEventsApp.Helpers;
+using SportEventsApp.Models;
 using System;
+using System.Diagnostics;
 
 namespace SportEventsApp;
 
@@ -14,6 +16,7 @@ public partial class AppShell : Shell
     public AppShell()
     {
         InitializeComponent();
+        ValidateLoginStatus();
  
         Routing.RegisterRoute("LoginPage", typeof(Pages.LoginPage));
         Routing.RegisterRoute("AdminPage", typeof(Pages.AdminPage));
@@ -26,6 +29,36 @@ public partial class AppShell : Shell
         this.Navigating += AppShell_Navigating;
 
         UpdateLoginMenuItem();
+    }
+
+    private void ValidateLoginStatus()
+    {
+        try
+        {
+            bool loggedIn = IsUserLoggedIn();
+            string username = Preferences.Get("Username", string.Empty);
+            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "users.db3");
+
+            if (!File.Exists(dbPath))
+            {
+                Preferences.Clear();
+                return;
+            }
+            if (loggedIn && !string.IsNullOrEmpty(username))
+            {
+                var userRepo = new UserRepository();
+                var user = userRepo.GetAllUsers().FirstOrDefault(u => u.Username == username);
+                if (user == null)
+                {
+                    Preferences.Clear();
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            System.Diagnostics.Debug.WriteLine($"ValidateLoginStatus error: {e.Message}");
+            Preferences.Clear();
+        }
     }
 
     private void AppShell_Navigating(object sender, ShellNavigatingEventArgs args)

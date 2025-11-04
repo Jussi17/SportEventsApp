@@ -20,7 +20,8 @@ public class UserRepository
 
         if (!userdb.Table<User>().Any())
         {
-            Debug.WriteLine("Käyttäjien tietokanta on tyhjä.");
+            InsertUser(new User { Username = "admin", Password = "admin123", Role = "admin" });
+            Debug.WriteLine("Käyttäjien tietokanta on tyhjä. Lisätään admin.");
         }
     }
 

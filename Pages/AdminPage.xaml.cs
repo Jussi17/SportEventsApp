@@ -12,8 +12,8 @@ public partial class AdminPage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
-
-        if (!Preferences.Get("IsLoggedIn", false))
+        
+        if (!Preferences.Get("IsLoggedIn", true))
         {
             Shell.Current.GoToAsync("//LoginPage");
             return;  

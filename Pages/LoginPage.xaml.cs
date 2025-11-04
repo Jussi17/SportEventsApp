@@ -23,7 +23,6 @@ namespace SportEventsApp.Pages
                 Preferences.Set("IsLoggedIn", true);
                 Preferences.Set("Username", user.Username);
                 Preferences.Set("Role", user.Role);
-                userdb.InsertUser(user); //En tiedä toimiiko vielä
 
                 (Shell.Current as AppShell)?.UpdateLoginMenuItem();
                 AppShell.RaiseRoleChanged(); 

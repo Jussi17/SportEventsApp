@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
+using SportEventsApp.Models;
+using SQLitePCL;
 using System.Globalization;
 
 namespace SportEventsApp;
@@ -11,7 +13,7 @@ public static class MauiProgram
 		var builder = MauiApp.CreateBuilder();
 		builder
 			.UseMauiApp<App>()
-            .UseMauiCommunityToolkit()
+			.UseMauiCommunityToolkit()
 			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -24,6 +26,9 @@ public static class MauiProgram
         var culture = new CultureInfo("fi-FI");
         CultureInfo.DefaultThreadCurrentCulture = culture;
         CultureInfo.DefaultThreadCurrentUICulture = culture;
+
+		builder.Services.AddSingleton<UserRepository>();
+		Batteries.Init();
 
         return builder.Build();
 	}
