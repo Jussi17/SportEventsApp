@@ -1,17 +1,19 @@
 using Microsoft.Maui.Controls;
+using Plugin.Maui.Calendar.Controls;
+using Plugin.Maui.Calendar.Models;
 using SportEventsApp.Models;
 using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Globalization;
-using Plugin.Maui.Calendar.Controls;
+using System.Linq;
+using Plugin.Maui.Calendar.Models;
 
 namespace SportEventsApp.Pages
 {
     public partial class CalendarPage : ContentPage
     {
         public ObservableCollection<Event> FilteredEvents { get; set; }
-        public ObservableCollection<DateTime> EventDates { get; set; }
+        public EventCollection EventDates { get; set; }
 
         private DateTime _selectedDate;
         public DateTime SelectedDate
@@ -30,7 +32,7 @@ namespace SportEventsApp.Pages
             InitializeComponent();
 
             FilteredEvents = new ObservableCollection<Event>();
-            EventDates = new ObservableCollection<DateTime>();
+            EventDates = new EventCollection();
             SelectedDate = DateTime.Today;
 
             ConfigureCalendar();
@@ -58,11 +60,17 @@ namespace SportEventsApp.Pages
         {
             EventDates.Clear();
             var allEvents = EventsListPage.Events;
-            var eventDates = allEvents.Select(e => e.Date.Date).Distinct();
-            foreach (var date in eventDates)
+
+            // Ryhmittele tapahtumat p‰iv‰m‰‰r‰n mukaan
+            var eventsByDate = allEvents.GroupBy(e => e.Date.Date);
+
+            foreach (var group in eventsByDate)
             {
-                EventDates.Add(date);
+                // Dictionary-syntaksi: avain = p‰iv‰m‰‰r‰, arvo = tyhj‰ lista
+                EventDates[group.Key] = new List<object>();
             }
+
+            OnPropertyChanged(nameof(EventDates));  // Ilmoittaa UI:lle muutoksesta
         }
 
         protected override void OnAppearing()
@@ -80,6 +88,32 @@ namespace SportEventsApp.Pages
 
             foreach (var ev in eventsOnDate)
                 FilteredEvents.Add(ev);
+        }
+        private async void OnEventSelected(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.CurrentSelection.FirstOrDefault() is Event selectedEvent)
+            {
+                ((CollectionView)sender).SelectedItem = null;
+
+                await Navigation.PushAsync(new EventCardPage(selectedEvent));
+            }
+        }
+        private void OnEventPointerEntered(object sender, PointerEventArgs e)
+        {
+            if (sender is Grid grid && grid.Parent is Frame frame)
+            {
+                frame.Scale = 1.02;
+                frame.Opacity = 0.9;
+            }
+        }
+
+        private void OnEventPointerExited(object sender, PointerEventArgs e)
+        {
+            if (sender is Grid grid && grid.Parent is Frame frame)
+            {
+                frame.Scale = 1.0;
+                frame.Opacity = 1.0;
+            }
         }
     }
 }

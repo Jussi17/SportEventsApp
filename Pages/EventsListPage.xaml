@@ -3,29 +3,20 @@
     x:Class="SportEventsApp.Pages.EventsListPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:calendar="clr-namespace:Plugin.Maui.Calendar.Controls;assembly=Plugin.Maui.Calendar"
     x:Name="EventsPageRoot"
     Title="Tapahtumat"
-    Padding="10"
-    SizeChanged="OnPageSizeChanged">
+    Padding="10">
 
-    <Grid
-        x:Name="MainGrid"
-        ColumnSpacing="10"
-        RowSpacing="10">
+    <Grid ColumnSpacing="10" RowSpacing="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <!--  Tulevat/Menneet napit  -->
             <RowDefinition Height="*" />
-            <!--  Lajit  -->
-            <RowDefinition Height="*" />
-            <!--  Tapahtumat  -->
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="350" />
-            <!--  Lajit  -->
             <ColumnDefinition Width="*" />
-            <!--  Tapahtumat  -->
         </Grid.ColumnDefinitions>
 
         <!--  Tulevat / Menneet napit  -->
@@ -33,16 +24,13 @@
             Grid.Row="0"
             Grid.Column="0"
             Grid.ColumnSpan="2"
-            HorizontalOptions="Fill"
+            HorizontalOptions="Center"
             Orientation="Horizontal"
-            Spacing="10">
-
+            Spacing="20">
             <Button
                 x:Name="UpcomingButton"
                 BackgroundColor="Blue"
                 Clicked="OnUpcomingClicked"
-                HeightRequest="50"
-                HorizontalOptions="Fill"
                 Text="Tulevat"
                 TextColor="White">
                 <Button.GestureRecognizers>
@@ -54,10 +42,7 @@
                 x:Name="PastButton"
                 BackgroundColor="LightGray"
                 Clicked="OnPastClicked"
-                HeightRequest="50"
-                HorizontalOptions="Fill"
-                Text="Menneet"
-                TextColor="Black">
+                Text="Menneet">
                 <Button.GestureRecognizers>
                     <PointerGestureRecognizer PointerEntered="OnButtonPointerEntered" PointerExited="OnButtonPointerExited" />
                 </Button.GestureRecognizers>
@@ -69,7 +54,6 @@
             x:Name="SportsList"
             Grid.Row="1"
             Grid.Column="0"
-            Grid.ColumnSpan="2"
             SelectionChanged="OnSportSelected"
             SelectionMode="Single">
             <CollectionView.ItemTemplate>
@@ -100,14 +84,13 @@
         <!--  Tapahtumat  -->
         <CollectionView
             x:Name="EventsList"
-            Grid.Row="2"
-            Grid.Column="0"
-            Grid.ColumnSpan="2"
+            Grid.Row="1"
+            Grid.Column="1"
             ItemsSource="{Binding FilteredEvents}"
             SelectionMode="None">
+
             <CollectionView.ItemsLayout>
                 <GridItemsLayout
-                    x:Name="EventsItemsLayout"
                     HorizontalItemSpacing="10"
                     Orientation="Vertical"
                     Span="2"
@@ -123,6 +106,7 @@
                                                           Dark=#333333}"
                         BorderColor="LightGray"
                         CornerRadius="10">
+
                         <Grid>
                             <Grid.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnEventTapped" />
@@ -133,6 +117,7 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
+
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
@@ -183,6 +168,7 @@
                                         <PointerGestureRecognizer PointerEntered="OnButtonPointerEntered" PointerExited="OnButtonPointerExited" />
                                     </Button.GestureRecognizers>
                                 </Button>
+
                                 <Button
                                     BackgroundColor="LightCoral"
                                     Clicked="OnDeleteEventClicked"
@@ -193,32 +179,11 @@
                                     </Button.GestureRecognizers>
                                 </Button>
                             </HorizontalStackLayout>
+
                         </Grid>
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-
-        <!--  VisualStateManager responsiivisuuteen  -->
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="DeviceStates">
-                <VisualState x:Name="Phone">
-                    <VisualState.Setters>
-                        <Setter TargetName="SportsList" Property="Grid.ColumnSpan" Value="2" />
-                        <Setter TargetName="EventsList" Property="Grid.Row" Value="2" />
-                        <Setter TargetName="EventsList" Property="Grid.Column" Value="0" />
-                        <Setter TargetName="EventsList" Property="Grid.ColumnSpan" Value="2" />
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="Tablet">
-                    <VisualState.Setters>
-                        <Setter TargetName="SportsList" Property="Grid.ColumnSpan" Value="1" />
-                        <Setter TargetName="EventsList" Property="Grid.Row" Value="1" />
-                        <Setter TargetName="EventsList" Property="Grid.Column" Value="1" />
-                        <Setter TargetName="EventsList" Property="Grid.ColumnSpan" Value="1" />
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
     </Grid>
 </ContentPage>
