@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="SportEventsApp.Pages.CalendarPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -6,14 +5,36 @@
     xmlns:calendar="clr-namespace:Plugin.Maui.Calendar.Controls;assembly=Plugin.Maui.Calendar"
     Title="Kalenteri"
     Padding="10">
-    <Grid ColumnSpacing="10" RowSpacing="10">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="350" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
 
-        <!--  Vasemmalla: Kalenteri  -->
-        <StackLayout Grid.Column="0">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <!--  Tyyli viikonpäivien otsikoille  -->
+            <Style x:Key="DaysTitleStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="{AppThemeBinding Light=Black, Dark=White}" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <!--  PC: vaakasuora Grid, Android: pystysuora muuttuu code-behindissa  -->
+    <Grid
+        x:Name="MainGrid"
+        ColumnSpacing="10"
+        RowSpacing="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="CalendarColumn" Width="350" />
+            <ColumnDefinition x:Name="EventsColumn" Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition x:Name="TopRow" Height="Auto" />
+            <RowDefinition x:Name="BottomRow" Height="*" />
+        </Grid.RowDefinitions>
+
+        <!--  Kalenteri  -->
+        <StackLayout
+            x:Name="CalendarStack"
+            Grid.Row="0"
+            Grid.Column="0">
             <Label
                 Margin="0,0,0,10"
                 FontAttributes="Bold"
@@ -30,23 +51,36 @@
                     x:Name="MyCalendar"
                     BackgroundColor="{AppThemeBinding Light=White,
                                                       Dark=#404040}"
+                    DaysTitleLabelStyle="{StaticResource DaysTitleStyle}"
                     DaysTitleMaximumLength="TwoChars"
                     DeselectedDayTextColor="{AppThemeBinding Light=Blue,
                                                              Dark=Aqua}"
                     EventIndicatorColor="Red"
+                    EventIndicatorSelectedColor="{AppThemeBinding Light=Blue,
+                                                                  Dark=Aqua}"
+                    EventIndicatorTextColor="{AppThemeBinding Light=Blue,
+                                                              Dark=Aqua}"
                     Events="{Binding EventDates}"
                     FirstDayOfWeek="Monday"
-                    HeightRequest="375"
-                    OtherMonthDayColor="{AppThemeBinding Light=Black,
-                                                         Dark=Black}"
                     SelectedDate="{Binding SelectedDate, Mode=TwoWay}"
+                    SelectedDayTextColor="{AppThemeBinding Light=Blue,
+                                                           Dark=Aqua}"
+                    TodayFillColor="{AppThemeBinding Light=White,
+                                                     Dark=DarkGrey}"
+                    TodayTextColor="{AppThemeBinding Light=Blue,
+                                                     Dark=Aqua}"
                     WeekendDayColor="{AppThemeBinding Light=Blue,
-                                                      Dark=Aqua}" />
+                                                      Dark=Aqua}"
+                    WeekendTitleStyle="{StaticResource DaysTitleStyle}" />
             </Border>
         </StackLayout>
 
-        <!--  Oikealla: Tapahtumat  -->
-        <StackLayout Grid.Column="1">
+        <!--  Tapahtumat  -->
+        <StackLayout
+            x:Name="EventsStack"
+            Grid.Row="0"
+            Grid.Column="1"
+            VerticalOptions="FillAndExpand">
             <Label
                 Margin="0,0,0,10"
                 FontAttributes="Bold"
@@ -54,8 +88,8 @@
                 Text="{Binding SelectedDate, StringFormat='Tapahtumat {0:dd.MM.yyyy}'}" />
             <CollectionView
                 ItemsSource="{Binding FilteredEvents}"
-                SelectionChanged="OnEventSelected"
-                SelectionMode="Single">
+                SelectionMode="None"
+                VerticalOptions="Fill">
                 <CollectionView.EmptyView>
                     <Label
                         Margin="20"
@@ -75,6 +109,9 @@
                             BorderColor="LightGray"
                             CornerRadius="10"
                             HasShadow="True">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnEventTapped" />
+                            </Frame.GestureRecognizers>
                             <VerticalStackLayout Spacing="5">
                                 <Label
                                     FontAttributes="Bold"

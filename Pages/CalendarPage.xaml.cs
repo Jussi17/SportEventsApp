@@ -44,11 +44,9 @@ namespace SportEventsApp.Pages
         {
             if (MyCalendar != null)
             {
-                // Asetetaan suomen kieli (ma = Monday ensimmäinen päivä)
                 var finnishCulture = new CultureInfo("fi-FI");
-                finnishCulture.DateTimeFormat.AbbreviatedDayNames = new[] { "ma", "ti", "ke", "to", "pe", "la", "su" };
+                finnishCulture.DateTimeFormat.AbbreviatedDayNames = ["ma", "ti", "ke", "to", "pe", "la", "su"];
 
-                // Jos plugin tukee Culture-propertiota:
                 MyCalendar.Culture = finnishCulture;
 
                 // Ladataan tapahtumien päivämäärät
@@ -60,13 +58,10 @@ namespace SportEventsApp.Pages
         {
             EventDates.Clear();
             var allEvents = EventsListPage.Events;
-
-            // Ryhmittele tapahtumat päivämäärän mukaan
             var eventsByDate = allEvents.GroupBy(e => e.Date.Date);
 
             foreach (var group in eventsByDate)
             {
-                // Dictionary-syntaksi: avain = päivämäärä, arvo = tyhjä lista
                 EventDates[group.Key] = new List<object>();
             }
 
@@ -76,8 +71,39 @@ namespace SportEventsApp.Pages
         protected override void OnAppearing()
         {
             base.OnAppearing();
+
             UpdateEventDates();
             FilterEvents();
+
+            // Responsiivisuus Androidille
+            if (DeviceInfo.Platform == DevicePlatform.Android)
+            {
+                // Pystysuora layout: kalenteri ylös, tapahtumat alle
+                Grid.SetRow(CalendarStack, 0);
+                Grid.SetColumn(CalendarStack, 0);
+
+                Grid.SetRow(EventsStack, 1);
+                Grid.SetColumn(EventsStack, 0);
+
+                CalendarColumn.Width = new GridLength(1, GridUnitType.Star);
+                EventsColumn.Width = new GridLength(0); // oikea sarake pois
+                TopRow.Height = GridLength.Auto;
+                BottomRow.Height = GridLength.Star;
+            }
+            else
+            {
+                // PC: vaakasuora layout
+                Grid.SetRow(CalendarStack, 0);
+                Grid.SetColumn(CalendarStack, 0);
+
+                Grid.SetRow(EventsStack, 0);
+                Grid.SetColumn(EventsStack, 1);
+
+                CalendarColumn.Width = new GridLength(350);
+                EventsColumn.Width = GridLength.Star;
+                TopRow.Height = GridLength.Auto;
+                BottomRow.Height = GridLength.Star;
+            }
         }
 
         private void FilterEvents()
@@ -89,15 +115,16 @@ namespace SportEventsApp.Pages
             foreach (var ev in eventsOnDate)
                 FilteredEvents.Add(ev);
         }
-        private async void OnEventSelected(object sender, SelectionChangedEventArgs e)
-        {
-            if (e.CurrentSelection.FirstOrDefault() is Event selectedEvent)
-            {
-                ((CollectionView)sender).SelectedItem = null;
 
+        private async void OnEventTapped(object sender, EventArgs e)
+        {
+            if (sender is Frame frame && frame.BindingContext is Event selectedEvent)
+            {
                 await Navigation.PushAsync(new EventCardPage(selectedEvent));
             }
         }
+
+#if WINDOWS
         private void OnEventPointerEntered(object sender, PointerEventArgs e)
         {
             if (sender is Grid grid && grid.Parent is Frame frame)
@@ -115,5 +142,6 @@ namespace SportEventsApp.Pages
                 frame.Opacity = 1.0;
             }
         }
+#endif
     }
 }
