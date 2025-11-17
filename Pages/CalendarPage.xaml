@@ -8,9 +8,15 @@
 
     <ContentPage.Resources>
         <ResourceDictionary>
-            <!--  Tyyli viikonpäivien otsikoille  -->
+            <!--  Tyyli  -->
             <Style x:Key="DaysTitleStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="{AppThemeBinding Light=Black, Dark=White}" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+            </Style>
+            <Style x:Key="MonthYearTitleStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="{AppThemeBinding Light=Black, Dark=White}" />
+                <Setter Property="FontSize" Value="Medium" />
+                <Setter Property="FontAttributes" Value="Bold" />
                 <Setter Property="HorizontalTextAlignment" Value="Center" />
             </Style>
         </ResourceDictionary>
@@ -54,24 +60,26 @@
                     DaysTitleLabelStyle="{StaticResource DaysTitleStyle}"
                     DaysTitleMaximumLength="TwoChars"
                     DeselectedDayTextColor="{AppThemeBinding Light=Blue,
-                                                             Dark=Aqua}"
+                                                             Dark=White}"
                     EventIndicatorColor="Red"
                     EventIndicatorSelectedColor="{AppThemeBinding Light=Blue,
-                                                                  Dark=Aqua}"
+                                                                  Dark=White}"
                     EventIndicatorTextColor="{AppThemeBinding Light=Blue,
-                                                              Dark=Aqua}"
+                                                              Dark=White}"
                     Events="{Binding EventDates}"
                     FirstDayOfWeek="Monday"
+                    MonthLabelStyle="{StaticResource MonthYearTitleStyle}"
                     SelectedDate="{Binding SelectedDate, Mode=TwoWay}"
-                    SelectedDayTextColor="{AppThemeBinding Light=Blue,
-                                                           Dark=Aqua}"
+                    SelectedDayTextColor="{AppThemeBinding Light=White,
+                                                           Dark=#404040}"
                     TodayFillColor="{AppThemeBinding Light=White,
-                                                     Dark=DarkGrey}"
+                                                     Dark=#404040}"
                     TodayTextColor="{AppThemeBinding Light=Blue,
-                                                     Dark=Aqua}"
+                                                     Dark=DarkGrey}"
                     WeekendDayColor="{AppThemeBinding Light=Blue,
-                                                      Dark=Aqua}"
-                    WeekendTitleStyle="{StaticResource DaysTitleStyle}" />
+                                                      Dark=White}"
+                    WeekendTitleStyle="{StaticResource DaysTitleStyle}"
+                    YearLabelStyle="{StaticResource MonthYearTitleStyle}" />
             </Border>
         </StackLayout>
 

@@ -37,6 +37,7 @@
         <Button
             Clicked="Register_Clicked"
             Text="Rekisteröidy"
+            TextColor="White"
             WidthRequest="400" />
         <Label
             x:Name="MessageLabel"
