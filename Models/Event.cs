@@ -16,7 +16,7 @@ public class Event : INotifyPropertyChanged
     public string Location { get; set; }
     public string Channel { get; set; }
     public string Description { get; set; }
-
+    public bool IsAdminVisiblePc { get; set; }
     public bool IsAdminVisible
     {
         get => UserRoleHelper.IsAdmin;

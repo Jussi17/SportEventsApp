@@ -28,6 +28,12 @@ public partial class AppShell : Shell
 
         this.Navigating += AppShell_Navigating;
 
+        // Sulkee hampurilaisvalikon navigoinnin jälkeen
+        this.Navigated += (s, e) =>
+        {
+            FlyoutIsPresented = false;
+        };
+
         UpdateLoginMenuItem();
     }
 

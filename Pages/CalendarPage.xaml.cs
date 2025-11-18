@@ -40,6 +40,7 @@ namespace SportEventsApp.Pages
             BindingContext = this;
         }
 
+        // M‰‰ritell‰‰n kalenterin asetukset
         private void ConfigureCalendar()
         {
             if (MyCalendar != null)
@@ -54,6 +55,7 @@ namespace SportEventsApp.Pages
             }
         }
 
+        // P‰ivitet‰‰n kalenterin tapahtumien p‰iv‰m‰‰r‰t
         private void UpdateEventDates()
         {
             EventDates.Clear();
@@ -106,6 +108,7 @@ namespace SportEventsApp.Pages
             }
         }
 
+        // Suodattaa tapahtumat valitun p‰iv‰n mukaan
         private void FilterEvents()
         {
             FilteredEvents.Clear();
@@ -116,6 +119,7 @@ namespace SportEventsApp.Pages
                 FilteredEvents.Add(ev);
         }
 
+        // K‰sittelee tapahtuman napautuksen
         private async void OnEventTapped(object sender, EventArgs e)
         {
             if (sender is Frame frame && frame.BindingContext is Event selectedEvent)

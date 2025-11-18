@@ -1,4 +1,4 @@
-using CommunityToolkit.Maui.Extensions;
+﻿using CommunityToolkit.Maui.Extensions;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Graphics;
 using Microsoft.Maui.Storage;
@@ -38,6 +38,8 @@ public partial class EventsListPage : ContentPage, INotifyPropertyChanged
     public static EventsListPage CurrentInstance { get; private set; }
 
     public bool showUpcoming = true;
+    private bool isAndroid = false;
+
     public EventsListPage()
     {
         InitializeComponent();
@@ -67,6 +69,7 @@ public partial class EventsListPage : ContentPage, INotifyPropertyChanged
         AppShell.NotificationsChanged += OnNotificationsChanged;
         AppShell.RoleChanged += OnRoleChanged;
     }
+
     public void LoadEventsDb()
     {
         Events.Clear();
@@ -75,10 +78,12 @@ public partial class EventsListPage : ContentPage, INotifyPropertyChanged
             Events.Add(e);
         }
     }
+
     private void OnNotificationsChanged(object sender, EventArgs e)
     {
         RefreshEventVisibilities();
     }
+
     private void OnRoleChanged(object sender, EventArgs e)
     {
         RefreshEventVisibilities();
@@ -89,10 +94,93 @@ public partial class EventsListPage : ContentPage, INotifyPropertyChanged
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        RefreshEventVisibilities();  // New: Refresh all visibilities
+        RefreshEventVisibilities();
         UpdateFilteredEvents(SportsList.SelectedItem as string ?? "Kaikki lajit");
         ForceCollectionRefresh();
+
+        // Responsiivisuus Androidille
+        if (DeviceInfo.Platform == DevicePlatform.Android)
+        {
+            isAndroid = true;
+
+            // Piilotetaan PC-elementit
+            ButtonsStack.IsVisible = false;
+            SportsList.IsVisible = false;
+
+            // Näytetään Android-elementit
+            AndroidFilters.IsVisible = true;
+
+            // Pystysuora layout: filtterit ylös, tapahtumat alle
+            Grid.SetRow(AndroidFilters, 0);
+            Grid.SetColumn(AndroidFilters, 0);
+            Grid.SetColumnSpan(AndroidFilters, 1);
+
+            Grid.SetRow(EventsList, 1);
+            Grid.SetColumn(EventsList, 0);
+            Grid.SetColumnSpan(EventsList, 1);
+
+            // Muutetaan Grid-määrittelyt
+            var mainGrid = this.Content as Grid;
+            if (mainGrid != null)
+            {
+                mainGrid.ColumnDefinitions.Clear();
+                mainGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Star });
+
+                mainGrid.RowDefinitions.Clear();
+                mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // Filtterit
+                mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Star }); // Tapahtumat
+            }
+
+            // Yksi tapahtuma per rivi
+            EventsLayout.Span = 1;
+
+            // Alusta Pickerit
+            TimePicker.SelectedIndex = 0; // "Tulevat"
+
+            var sports = Events.Select(e => e.Sport).Distinct().ToList();
+            sports.Insert(0, "Kaikki lajit");
+            SportPicker.ItemsSource = sports;
+            SportPicker.SelectedIndex = 0;
+
+            // Päivitä admin-näkyvyys
+            UpdateAdminVisibilityForAndroid();
+        }
+        else
+        {
+            isAndroid = false;
+
+            // Näytetään PC-elementit
+            ButtonsStack.IsVisible = true;
+            SportsList.IsVisible = true;
+            AndroidFilters.IsVisible = false;
+
+            // PC: vaakasuora layout (alkuperäinen)
+            Grid.SetRow(SportsList, 1);
+            Grid.SetColumn(SportsList, 0);
+
+            Grid.SetRow(EventsList, 1);
+            Grid.SetColumn(EventsList, 1);
+
+            var mainGrid = this.Content as Grid;
+            if (mainGrid != null)
+            {
+                mainGrid.ColumnDefinitions.Clear();
+                mainGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(350) });
+                mainGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Star });
+
+                mainGrid.RowDefinitions.Clear();
+                mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Star });
+            }
+
+            Grid.SetColumnSpan(ButtonsStack, 2);
+
+            // Kaksi tapahtumaa per rivi
+            EventsLayout.Span = 2;
+        }
     }
+
+    // Pakotettu kokoelman päivitys UI:lle
     private void ForceCollectionRefresh()
     {
         if (FilteredEvents == null) return;
@@ -103,6 +191,7 @@ public partial class EventsListPage : ContentPage, INotifyPropertyChanged
         OnPropertyChanged(nameof(FilteredEvents));
     }
 
+    // Päivitetään tapahtumien näkyvyydet ilmoitusten ja roolin mukaan
     private void RefreshEventVisibilities()
     {
         bool notificationsEnabled = Preferences.Get("NotificationsEnabled", true);
@@ -116,8 +205,19 @@ public partial class EventsListPage : ContentPage, INotifyPropertyChanged
         }
     }
 
+    // Päivitetään admin-näkyvyydet Androidilla
+    private void UpdateAdminVisibilityForAndroid()
+    {
+        foreach (var evt in Events)
+        {
+            evt.IsAdminVisiblePc = !isAndroid && evt.IsAdminVisible;
+            evt.OnPropertyChanged(nameof(evt.IsAdminVisiblePc));
+        }
+    }
+
     public static ObservableCollection<Event> GetAllEvents() => Events;
 
+    // Lisätään uusi tapahtuma ja päivitetään näkymä
     public void AddAndRefreshEvent(Event newEvent)
     {
         Events.Add(newEvent);
@@ -125,6 +225,7 @@ public partial class EventsListPage : ContentPage, INotifyPropertyChanged
         UpdateFilteredEvents(SportsList.SelectedItem as string ?? "Kaikki lajit");
     }
 
+    // Tapahtuman napautus - siirrytään EventCardPage-sivulle
     private async void OnEventTapped(object sender, EventArgs e)
     {
         if (sender is Grid grid && grid.BindingContext is Event evt)
@@ -133,12 +234,37 @@ public partial class EventsListPage : ContentPage, INotifyPropertyChanged
         }
     }
 
+    // Lajin valinta
     private void OnSportSelected(object sender, SelectionChangedEventArgs e)
     {
         if (e.CurrentSelection.FirstOrDefault() is not string selectedSport) return;
         UpdateFilteredEvents(selectedSport);
     }
 
+    // TimePickerin muutos Androidilla
+    private void OnTimePickerChanged(object sender, EventArgs e)
+    {
+        if (TimePicker.SelectedIndex == 0)
+        {
+            showUpcoming = true;
+        }
+        else
+        {
+            showUpcoming = false;
+        }
+        UpdateFilteredEvents(SportPicker.SelectedItem as string ?? "Kaikki lajit");
+    }
+
+    // SportPickerin muutos Androidilla
+    private void OnSportPickerChanged(object sender, EventArgs e)
+    {
+        if (SportPicker.SelectedItem is string selectedSport)
+        {
+            UpdateFilteredEvents(selectedSport);
+        }
+    }
+
+    // Tulevat tapahtumat -nappi klikkaus
     private void OnUpcomingClicked(object sender, EventArgs e)
     {
         showUpcoming = true;
@@ -149,6 +275,7 @@ public partial class EventsListPage : ContentPage, INotifyPropertyChanged
         UpdateFilteredEvents(SportsList.SelectedItem as string ?? "Kaikki lajit");
     }
 
+    // Menneet tapahtumat -nappi klikkaus
     private void OnPastClicked(object sender, EventArgs e)
     {
         showUpcoming = false;
@@ -159,7 +286,7 @@ public partial class EventsListPage : ContentPage, INotifyPropertyChanged
         UpdateFilteredEvents(SportsList.SelectedItem as string ?? "Kaikki lajit");
     }
 
-    // P�ivitet��n FilteredEvents ja luodaan uusi kokoelma, jotta UI p�ivittyy
+    // Päivitetään FilteredEvents ja luodaan uusi kokoelma, jotta UI päivittyy
     private void UpdateFilteredEvents(string selectedSport)
     {
         var query = Events.Where(ev => showUpcoming ? ev.Date >= DateTime.Now : ev.Date < DateTime.Now);
@@ -170,6 +297,7 @@ public partial class EventsListPage : ContentPage, INotifyPropertyChanged
         FilteredEvents = new ObservableCollection<Event>(query.OrderBy(ev => ev.Date));
     }
 
+    // Kello-nappi klikkaus - ilmoitusten hallinta
     private void OnClockClicked(object sender, EventArgs e)
     {
         if (sender is Button button && button.BindingContext is Event evt)
@@ -187,43 +315,84 @@ public partial class EventsListPage : ContentPage, INotifyPropertyChanged
         }
     }
 
+    // Ilmoituksen ajastus eri alustoille
     private void ScheduleNotification(Event tapahtuma)
     {
         if (!Preferences.Get("NotificationsEnabled", true) || !tapahtuma.Notify) return;
 
 #if WINDOWS
-        ShowWindowsNotification(
-            "Ottelu tulossa!",
-            $"{tapahtuma.Name} alkaa {tapahtuma.Date:dd.MM.yyyy HH:mm}"
-        );
+    ShowWindowsNotification(
+        "Ottelu tulossa!",
+        $"{tapahtuma.Name} alkaa {tapahtuma.Date:dd.MM.yyyy HH:mm}"
+    );
+#elif ANDROID
+        ShowAndroidNotification(tapahtuma);
 #else
-        var notification = new NotificationRequest
+    // iOS tai muu alusta
+    var notification = new NotificationRequest
+    {
+        NotificationId = tapahtuma.Id,
+        Title = "Ottelu tulossa!",
+        Description = $"{tapahtuma.Name} alkaa {tapahtuma.Date:dd.MM.yyyy HH:mm}",
+        Schedule = new NotificationRequestSchedule
         {
-            NotificationId = tapahtuma.Id,
-            Title = "Ottelu tulossa!",
-            Description = $"{tapahtuma.Name} alkaa {tapahtuma.Date:dd.MM.yyyy HH:mm}",
-            Schedule = new NotificationRequestSchedule
-            {
-                NotifyTime = DateTime.Now.AddSeconds(5)
-            }
-        };
-        LocalNotificationCenter.Current.Show(notification);
+            NotifyTime = DateTime.Now.AddSeconds(5)
+        }
+    };
+    LocalNotificationCenter.Current.Show(notification);
 #endif
     }
 
 #if WINDOWS
-    private void ShowWindowsNotification(string title, string message)
-    {
-        var toastContent = new ToastContentBuilder()
-            .AddText(title)
-            .AddText(message)
-            .GetToastContent();
+private void ShowWindowsNotification(string title, string message)
+{
+    var toastContent = new ToastContentBuilder()
+        .AddText(title)
+        .AddText(message)
+        .GetToastContent();
 
-        var toast = new ToastNotification(toastContent.GetXml());
-        ToastNotificationManager.CreateToastNotifier("SportEventsApp").Show(toast);
+    var toast = new ToastNotification(toastContent.GetXml());
+    ToastNotificationManager.CreateToastNotifier("SportEventsApp").Show(toast);
+}
+#endif
+
+#if ANDROID
+    private void ShowAndroidNotification(Event tapahtuma)
+    {
+        // Laske kuinka kauan tapahtumaan on aikaa
+        var timeUntilEvent = tapahtuma.Date - DateTime.Now;
+
+        // Jos tapahtuma on menneisyydessä, älä lähetä ilmoitusta
+        if (timeUntilEvent.TotalSeconds <= 0)
+            return;
+
+        var notificationTime = tapahtuma.Date.AddMinutes(-10);
+
+        if (notificationTime < DateTime.Now)
+            notificationTime = DateTime.Now.AddSeconds(5);
+
+        var notification = new NotificationRequest
+        {
+            NotificationId = tapahtuma.Id,
+            Title = "Kohta se alkaa!",
+            Description = $"{tapahtuma.Name} alkaa {tapahtuma.Date:HH:mm}",
+            Subtitle = $"📍 {tapahtuma.Location}",
+            Schedule = new NotificationRequestSchedule
+            {
+                NotifyTime = notificationTime
+            },
+            Android = new Plugin.LocalNotification.AndroidOption.AndroidOptions
+            {
+                Priority = Plugin.LocalNotification.AndroidOption.AndroidPriority.High,
+                ChannelId = "sport_events_channel"
+            }
+        };
+
+        LocalNotificationCenter.Current.Show(notification);
     }
 #endif
 
+    // Ilmoituksen peruutus
     private void CancelNotification(Event evt)
     {
         LocalNotificationCenter.Current.Cancel(evt.Id);
@@ -285,11 +454,12 @@ public partial class EventsListPage : ContentPage, INotifyPropertyChanged
         }
     }
 
+    // Tapahtuman poisto
     private async void OnDeleteEventClicked(object sender, EventArgs e)
     {
         if (sender is Button button && button.BindingContext is Event evt)
         {
-            bool confirm = await DisplayAlert("Vahvista poisto", $"Haluatko varmasti poistaa tapahtuman '{evt.Name}'?", "Kyll�", "Peruuta");
+            bool confirm = await DisplayAlert("Vahvista poisto", $"Haluatko varmasti poistaa tapahtuman '{evt.Name}'?", "Kyllä", "Peruuta");
             if (confirm)
             {
                 repo.DeleteEvent(evt);
@@ -299,6 +469,7 @@ public partial class EventsListPage : ContentPage, INotifyPropertyChanged
         }
     }
 
+    // Tapahtuman muokkaus
     private async void OnEditEventClicked(object sender, EventArgs e)
     {
         if (sender is Button button && button.BindingContext is Event evt)
@@ -309,7 +480,7 @@ public partial class EventsListPage : ContentPage, INotifyPropertyChanged
 
             if (result != null)
             {
-                // P�ivitet��n UI
+                // Päivitetään UI
                 repo.UpdateEvent(result);
                 UpdateFilteredEvents(SportsList.SelectedItem as string ?? "Kaikki lajit");
             }
