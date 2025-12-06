@@ -177,6 +177,7 @@ public partial class EventsListPage : ContentPage, INotifyPropertyChanged
 
             // Kaksi tapahtumaa per rivi
             EventsLayout.Span = 2;
+            UpdateAdminVisibilityForAndroid();
         }
     }
 
@@ -202,10 +203,12 @@ public partial class EventsListPage : ContentPage, INotifyPropertyChanged
             e.NotifyVisible = e.Date >= now && notificationsEnabled;
             e.OnPropertyChanged(nameof(e.IsAdminVisible));
             e.OnPropertyChanged(nameof(e.NotifyVisible));
+
+            e.IsAdminVisiblePc = !isAndroid && e.IsAdminVisible;
+            e.OnPropertyChanged(nameof(e.IsAdminVisiblePc));
         }
     }
 
-    // Päivitetään admin-näkyvyydet Androidilla
     private void UpdateAdminVisibilityForAndroid()
     {
         foreach (var evt in Events)

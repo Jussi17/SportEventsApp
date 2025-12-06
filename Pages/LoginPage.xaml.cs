@@ -6,6 +6,7 @@ namespace SportEventsApp.Pages
     public partial class LoginPage : ContentPage
     {
         private UserRepository userdb = new UserRepository();
+
         public LoginPage()
         {
             InitializeComponent();
@@ -15,7 +16,6 @@ namespace SportEventsApp.Pages
         {
             var username = UsernameEntry.Text?.Trim();
             var password = PasswordEntry.Text?.Trim();
-
             var user = UserService.Login(username, password);
 
             if (user != null)
@@ -24,9 +24,25 @@ namespace SportEventsApp.Pages
                 Preferences.Set("Username", user.Username);
                 Preferences.Set("Role", user.Role);
 
-                (Shell.Current as AppShell)?.UpdateLoginMenuItem();
-                AppShell.RaiseRoleChanged(); 
-                await Shell.Current.GoToAsync("///EventsListPage");
+                if (Shell.Current is AppShell appShell)
+                {
+                    appShell.UpdateLoginMenuItem();
+                }
+
+                AppShell.RaiseRoleChanged();
+
+                // Mene AdminPagelle jos admin, muuten EventsListPagelle
+                if (user.Role.Equals("admin", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Poista ensin LoginPage navigaatiopinosta
+                    await Navigation.PopModalAsync();
+                    await Shell.Current.GoToAsync("//AdminPage");
+                }
+                else
+                {
+                    await Navigation.PopModalAsync();
+                    await Shell.Current.GoToAsync("//EventsListPage");
+                }
             }
             else
             {

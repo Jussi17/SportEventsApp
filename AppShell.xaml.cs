@@ -10,6 +10,7 @@ namespace SportEventsApp;
 public partial class AppShell : Shell
 {
     private bool _pendingLoginRedirect = false;
+    private bool _isLoggingOut = false;
     public static event EventHandler NotificationsChanged;
     public static event EventHandler RoleChanged;
 
@@ -17,7 +18,7 @@ public partial class AppShell : Shell
     {
         InitializeComponent();
         ValidateLoginStatus();
- 
+
         Routing.RegisterRoute("LoginPage", typeof(Pages.LoginPage));
         Routing.RegisterRoute("AdminPage", typeof(Pages.AdminPage));
         Routing.RegisterRoute("CalendarPage", typeof(Pages.CalendarPage));
@@ -67,27 +68,40 @@ public partial class AppShell : Shell
         }
     }
 
-    private void AppShell_Navigating(object sender, ShellNavigatingEventArgs args)
+    private async void AppShell_Navigating(object sender, ShellNavigatingEventArgs args)
     {
-        var target = args?.Target?.Location?.OriginalString ?? string.Empty;
+        // Älä tarkista jos ollaan kirjautumassa ulos
+        if (_isLoggingOut)
+            return;
 
+        var target = args?.Target?.Location?.OriginalString ?? string.Empty;
         if (!string.IsNullOrEmpty(target) &&
             target.IndexOf("AdminPage", StringComparison.OrdinalIgnoreCase) >= 0)
         {
             bool loggedIn = Preferences.Get("IsLoggedIn", false);
-            bool isAdmin = UserRoleHelper.IsAdmin;  
+            bool isAdmin = UserRoleHelper.IsAdmin;
+            System.Diagnostics.Debug.WriteLine($"Navigating to AdminPage - LoggedIn: {loggedIn}, IsAdmin: {isAdmin}");
 
-            if (!loggedIn || !isAdmin)
+            if (!loggedIn)
             {
+                // Ei kirjautunut -> vain ohjaa LoginPagelle
                 args.Cancel();
-                _pendingLoginRedirect = true;  
+                await Shell.Current.Navigation.PushModalAsync(new Pages.LoginPage());  // Change to modal
+            }
+            else if (!isAdmin)
+            {
+                // Kirjautunut mutta ei admin -> näytä ilmoitus
+                args.Cancel();
+                await Shell.Current.DisplayAlert("Pääsy evätty",
+                    "Sinulla ei ole oikeuksia tälle sivulle. Tarvitset admin-käyttäjän.",
+                    "OK");
             }
         }
     }
 
     public static void RaiseRoleChanged()
     {
-        RoleChanged?.Invoke(null, EventArgs.Empty);  
+        RoleChanged?.Invoke(null, EventArgs.Empty);
     }
 
     private bool IsUserLoggedIn() => Preferences.Get("IsLoggedIn", false);
@@ -95,29 +109,29 @@ public partial class AppShell : Shell
     private async void OnLoginClicked(object sender, EventArgs e)
     {
         bool loggedIn = IsUserLoggedIn();
-
         if (!loggedIn)
         {
-            await Shell.Current.GoToAsync("/LoginPage");
+            await Shell.Current.Navigation.PushModalAsync(new Pages.LoginPage());  // Change to modal
         }
         else
         {
+            // Tarkista missä ollaan
+            var current = Shell.Current?.CurrentState?.Location?.OriginalString ?? string.Empty;
+            bool isOnAdminPage = current.IndexOf("AdminPage", StringComparison.OrdinalIgnoreCase) >= 0;
+
+            _isLoggingOut = true;
             Preferences.Set("IsLoggedIn", false);
             Preferences.Set("Role", "user");
             Preferences.Remove("Username");
             UpdateLoginMenuItem();
             RaiseRoleChanged();
 
-            var current = Shell.Current?.CurrentState?.Location?.OriginalString ?? string.Empty;
-            if (!string.IsNullOrEmpty(current) &&
-                current.IndexOf("AdminPage", StringComparison.OrdinalIgnoreCase) >= 0)
+            // Jos ollaan AdminPagella, mene pois sieltä
+            if (isOnAdminPage)
             {
-                await Shell.Current.GoToAsync("///");
+                await Shell.Current.GoToAsync("//EventsListPage");
             }
-            else
-            {
-                await Shell.Current.GoToAsync("///EventsListPage"); 
-            }
+            _isLoggingOut = false;
         }
     }
 
@@ -151,7 +165,7 @@ public partial class AppShell : Shell
         if (_pendingLoginRedirect)
         {
             _pendingLoginRedirect = false;
-            await Task.Delay(50); // Varmistaa, että Shell on valmis
+            await Task.Delay(50);
             await Shell.Current.GoToAsync("/LoginPage");
         }
     }

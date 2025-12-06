@@ -5,7 +5,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:pages="clr-namespace:SportEventsApp.Pages"
     Title="SportEventsApp">
-
     <!--  Hampurilaisvalikko  -->
     <Shell.FlyoutHeader>
         <Grid Padding="10">
@@ -20,7 +19,6 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-
             <!--  Tumma teema  -->
             <Label
                 Grid.Row="0"
@@ -28,13 +26,11 @@
                 FontSize="14"
                 Text="Tumma teema"
                 VerticalOptions="Center" />
-
             <Switch
                 x:Name="TeemaSwitch"
                 Grid.Row="0"
                 Grid.Column="1"
                 Toggled="TeemaToggled" />
-
             <!--  Ilmoitukset  -->
             <Label
                 Grid.Row="1"
@@ -42,7 +38,6 @@
                 FontSize="14"
                 Text="Ilmoitukset"
                 VerticalOptions="Center" />
-
             <Switch
                 x:Name="NotificationSwitch"
                 Grid.Row="1"
@@ -50,8 +45,6 @@
                 Toggled="OnNotificationToggled" />
         </Grid>
     </Shell.FlyoutHeader>
-
-
     <FlyoutItem Title="Tapahtumat">
         <ShellContent
             Title="Lista"
@@ -61,22 +54,18 @@
             Title="Kalenteri"
             ContentTemplate="{DataTemplate pages:CalendarPage}"
             Route="CalendarPage" />
-
         <ShellContent
             Title="Palvelut"
             ContentTemplate="{DataTemplate pages:PalveluPage}"
             Route="PalveluPage" />
-
         <ShellContent
             Title="Hallinta"
             ContentTemplate="{DataTemplate pages:AdminPage}"
             Route="AdminPage" />
     </FlyoutItem>
-
     <!--  Kirjautumispainike  -->
     <MenuItem
         x:Name="LoginMenuItem"
         Clicked="OnLoginClicked"
         Text="Kirjaudu sisään" />
-
 </Shell>
